@@ -3,6 +3,8 @@
 namespace App\Entity;
 use App\Enum\StatusEnum;
 use App\Repository\ChambresRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,6 +36,24 @@ class Chambres
 
     #[ORM\Column(length: 255)]
     private ?string $image = null;
+
+    /**
+     * @var Collection<int, PanierChambres>
+     */
+    #[ORM\OneToMany(targetEntity: PanierChambres::class, mappedBy: 'chambre')]
+    private Collection $panierChambres;
+
+    /**
+     * @var Collection<int, ReservationChambre>
+     */
+    #[ORM\OneToMany(targetEntity: ReservationChambre::class, mappedBy: 'chambre_id')]
+    private Collection $reservation_chambre;
+
+    public function __construct()
+    {
+        $this->panierChambres = new ArrayCollection();
+        $this->reservation_chambre = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -100,12 +120,12 @@ class Chambres
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?StatusEnum
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(StatusEnum $status): static
     {
         $this->status = $status;
 
@@ -120,6 +140,66 @@ class Chambres
     public function setImage(string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PanierChambres>
+     */
+    public function getPanierChambres(): Collection
+    {
+        return $this->panierChambres;
+    }
+
+    public function addPanierChambre(PanierChambres $panierChambre): static
+    {
+        if (!$this->panierChambres->contains($panierChambre)) {
+            $this->panierChambres->add($panierChambre);
+            $panierChambre->setChambre($this);
+        }
+
+        return $this;
+    }
+
+    public function removePanierChambre(PanierChambres $panierChambre): static
+    {
+        if ($this->panierChambres->removeElement($panierChambre)) {
+            // set the owning side to null (unless already changed)
+            if ($panierChambre->getChambre() === $this) {
+                $panierChambre->setChambre(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ReservationChambre>
+     */
+    public function getReservationChambre(): Collection
+    {
+        return $this->reservation_chambre;
+    }
+
+    public function addReservationChambre(ReservationChambre $reservationChambre): static
+    {
+        if (!$this->reservation_chambre->contains($reservationChambre)) {
+            $this->reservation_chambre->add($reservationChambre);
+            $reservationChambre->setChambreId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservationChambre(ReservationChambre $reservationChambre): static
+    {
+        if ($this->reservation_chambre->removeElement($reservationChambre)) {
+            // set the owning side to null (unless already changed)
+            if ($reservationChambre->getChambreId() === $this) {
+                $reservationChambre->setChambreId(null);
+            }
+        }
 
         return $this;
     }
