@@ -1,0 +1,162 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <style>
+        :root {
+            --noir: #010101;
+            --blanc: #ffffff;
+            --beige: #e5bd43;
+            --second: #fafafa;
+        }
+        @keyframes slideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-slideDown {
+            animation: slideDown 0.3s ease-out;
+        }
+        .hover-effect {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.open {
+            max-height: 500px; /* Ajustez selon le contenu */
+        }
+    </style>
+</head>
+<body class="font-[Funnel Sans] bg-[var(--second)]">
+
+    <!--=========================Hero Section====================-->
+    <section class="relative bg-[url('img/about1.jpg')] bg-center bg-cover h-96 flex items-center justify-center text-white text-center">
+        <div class="p-8">
+            <h1 class="text-5xl font-bold mb-4">Confirmation de Réservation</h1>
+            <p class="text-lg">Remplissez vos informations pour finaliser votre réservation.</p>
+        </div>
+    </section>
+
+    <!--=========================Formulaire de Réservation====================-->
+    <section class="container mx-auto my-12 p-6">
+        <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg hover-effect">
+            <h2 class="text-3xl font-semibold mb-6 text-[var(--noir)]">Informations Personnelles</h2>
+            <form class="space-y-6">
+                <!-- Nom et Prénom -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+                        <input type="text" id="nom" name="nom" class="mt-1 p-2 w-full border rounded" required>
+                    </div>
+                    <div>
+                        <label for="prenom" class="block text-sm font-medium text-gray-700">Prénom</label>
+                        <input type="text" id="prenom" name="prenom" class="mt-1 p-2 w-full border rounded" required>
+                    </div>
+                </div>
+
+                <!-- Email et Téléphone -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="email" name="email" class="mt-1 p-2 w-full border rounded" required>
+                    </div>
+                    <div>
+                        <label for="telephone" class="block text-sm font-medium text-gray-700">Téléphone</label>
+                        <input type="tel" id="telephone" name="telephone" class="mt-1 p-2 w-full border rounded" required>
+                    </div>
+                </div>
+
+                <!-- Adresse -->
+                <div>
+                    <label for="adresse" class="block text-sm font-medium text-gray-700">Adresse</label>
+                    <input type="text" id="adresse" name="adresse" class="mt-1 p-2 w-full border rounded" required>
+                </div>
+
+                <!-- Ville et Code Postal -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="ville" class="block text-sm font-medium text-gray-700">Ville</label>
+                        <input type="text" id="ville" name="ville" class="mt-1 p-2 w-full border rounded" required>
+                    </div>
+                    <div>
+                        <label for="codePostal" class="block text-sm font-medium text-gray-700">Code Postal</label>
+                        <input type="text" id="codePostal" name="codePostal" class="mt-1 p-2 w-full border rounded" required>
+                    </div>
+                </div>
+
+                <!-- Pays -->
+                <div>
+                    <label for="pays" class="block text-sm font-medium text-gray-700">Pays</label>
+                    <select id="pays" name="pays" class="mt-1 p-2 w-full border rounded" required>
+                        <option value="France">France</option>
+                        <option value="Belgique">Belgique</option>
+                        <option value="Suisse">Suisse</option>
+                        <!-- Ajoutez d'autres pays ici -->
+                    </select>
+                </div>
+
+                <!-- Commentaires -->
+                <div>
+                    <label for="commentaires" class="block text-sm font-medium text-gray-700">Commentaires</label>
+                    <textarea id="commentaires" name="commentaires" rows="4" class="mt-1 p-2 w-full border rounded"></textarea>
+                </div>
+
+                <!-- Accordéon pour les informations de paiement -->
+                <div class="my-6">
+                    <button id="accordion-button" class="w-full bg-[var(--beige)] text-white py-3 rounded-lg hover:bg-black transition duration-300 flex items-center justify-between px-4">
+                        <span class="font-semibold">Informations de Paiement</span>
+                        <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+                    <div id="accordion-content" class="accordion-content bg-gray-50 p-6 rounded-lg mt-2 shadow-inner">
+                        <form class="space-y-4">
+                            <div>
+                                <label for="cardNumber" class="block text-sm font-medium text-gray-700">Numéro de carte</label>
+                                <input type="text" id="cardNumber" name="cardNumber" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent" required>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="expiryDate" class="block text-sm font-medium text-gray-700">Date d'expiration</label>
+                                    <input type="text" id="expiryDate" name="expiryDate" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent" required>
+                                </div>
+                                <div>
+                                    <label for="cvv" class="block text-sm font-medium text-gray-700">CVV</label>
+                                    <input type="text" id="cvv" name="cvv" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent" required>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Bouton de soumission -->
+                <button type="submit" class="w-full bg-[var(--beige)] text-white py-2 rounded hover:bg-black transition duration-300">
+                    Confirmer la Réservation
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Script pour l'accordéon -->
+    <script>
+        const accordionButton = document.getElementById('accordion-button');
+        const accordionContent = document.getElementById('accordion-content');
+
+        accordionButton.addEventListener('click', (event) => {
+            event.preventDefault(); // Empêche le comportement par défaut du bouton
+            accordionContent.classList.toggle('open');
+            accordionButton.querySelector('i').classList.toggle('fa-chevron-up');
+            accordionButton.querySelector('i').classList.toggle('fa-chevron-down');
+        });
+    </script>
+</body>
+{% endblock %}

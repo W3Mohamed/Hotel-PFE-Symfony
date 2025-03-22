@@ -1,0 +1,79 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+<body class="font-[Funnel Sans]">
+
+    <!--=========================Hero Section====================-->
+    <section class="relative bg-[linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url('img/contact_hero.jpg')] bg-center bg-cover h-96 flex items-center justify-center">
+        <div class="text-center text-white">
+            <h1 class="text-5xl font-semibold">Contactez-nous</h1>
+            <p class="mt-4 text-lg">Nous sommes là pour répondre à vos questions.</p>
+        </div>
+    </section>
+
+    <!--=========================Contact Section====================-->
+    <section class="py-16 bg-[var(--second)]">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Formulaire de Contact -->
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-6">Envoyez-nous un message</h2>
+                    <form class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700">Nom Complet</label>
+                            <input type="text" id="name" name="name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--beige)] focus:border-[var(--beige)]" required>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="email" name="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--beige)] focus:border-[var(--beige)]" required>
+                        </div>
+                        <div>
+                            <label for="subject" class="block text-sm font-medium text-gray-700">Sujet</label>
+                            <input type="text" id="subject" name="subject" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--beige)] focus:border-[var(--beige)]" required>
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+                            <textarea id="message" name="message" rows="5" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--beige)] focus:border-[var(--beige)]" required></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-[var(--beige)] text-white py-3 px-4 rounded-md font-semibold hover:bg-black duration-300">
+                                Envoyer le message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Informations de Contact et Carte -->
+                <div class="space-y-8">
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <h2 class="text-2xl font-semibold mb-6">Nos Coordonnées</h2>
+                        <ul class="space-y-4 text-gray-700">
+                            <li class="flex items-center">
+                                <i class="fas fa-map-marker-alt text-[var(--beige)] mr-4"></i>
+                                <span>123 Rue de l'Hôtel, Ville, Pays</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-phone text-[var(--beige)] mr-4"></i>
+                                <span>+33 123 456 789</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-envelope text-[var(--beige)] mr-4"></i>
+                                <span>info@hotelroxal.com</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Carte Google Maps -->
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <h2 class="text-2xl font-semibold mb-6">Où nous trouver</h2>
+                        <div class="overflow-hidden rounded-lg">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.99144060821!2d2.292292615674389!3d48.85837360866186!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e2964e34e2d%3A0x8ddca9ee380ef7e0!2sTour%20Eiffel!5e0!3m2!1sfr!2sfr!4v1633012345678!5m2!1sfr!2sfr" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+{% endblock %}

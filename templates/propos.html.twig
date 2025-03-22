@@ -1,0 +1,124 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <style>
+
+        @keyframes slideDown {
+            0% {
+            opacity: 0;
+            transform: translateY(-20px);
+            }
+            100% {
+            opacity: 1;
+            transform: translateY(0);
+            }
+        }
+        .animate-slideDown {
+            animation: slideDown 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="font-[Funnel Sans]">
+
+    <!--=========================Hero Section====================-->
+    <section class="relative bg-[linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url('img/about1.jpg')] bg-center bg-cover h-screen flex items-center justify-center">
+        <div class="text-center text-white">
+            <h1 class="text-4xl md:text-6xl font-semibold mb-4">À propos de nous</h1>
+            <p class="text-xl md:text-2xl max-w-2xl mx-auto">
+                Découvrez l'histoire et les valeurs de l'Hôtel Roxal, un havre de paix où luxe et confort se rencontrent pour créer une expérience inoubliable.
+            </p>
+            <a href="#histoire" class="bg-[var(--beige)] text-white py-3 px-8 mt-8 inline-block rounded-sm font-semibold hover:bg-black duration-300">
+                Découvrir notre histoire
+            </a>
+        </div>
+    </section>
+
+    <!--=========================About Section====================-->
+    <section class="mx-8 md:mx-16 my-24" id="histoire">
+        <h2 class="text-3xl md:text-6xl font-semibold text-center mb-8 text-[var(--noir)] uppercase animate-slideDown">Notre Histoire</h2>
+        <div class="flex items-center justify-center mb-12">
+            <img src="icon/decorated-pattern-2.svg" alt="Décoration" class="w-64">
+        </div>
+
+        <!-- Grille avec texte et image -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <!-- Image avec effet de bordure -->
+            <div class="relative group">
+                <!-- Modifier la taille de l'image ici -->
+                <img src="img/his.jpg" alt="Notre Histoire" class="w-full h-96 object-cover rounded-lg shadow-lg transform transition-transform duration-500 group-hover:scale-105">
+                
+            </div>
+
+            <!-- Texte et bouton -->
+            <div class="space-y-6">
+                <h3 class="text-2xl font-semibold text-[var(--beige)]">Depuis 1995</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    L'Hôtel Roxal a été fondé en 1995 avec une vision simple : offrir un havre de paix où luxe et confort se rencontrent. Depuis lors, nous avons accueilli des milliers de clients venus du monde entier, leur offrant une expérience inoubliable.
+                </p>
+                <p class="text-gray-600 leading-relaxed">
+                    Notre équipe dévouée travaille sans relâche pour garantir que chaque séjour soit parfait. Que ce soit pour un voyage d'affaires ou des vacances en famille, nous nous engageons à fournir un service exceptionnel.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="/contact" class="bg-[var(--beige)] text-white py-3 px-8 rounded-sm font-semibold hover:bg-black duration-300">
+                        Contactez-nous
+                    </a>
+                    <a href="/chambres" class="bg-transparent border border-[var(--beige)] text-[var(--beige)] py-3 px-8 rounded-sm font-semibold hover:bg-[var(--beige)] hover:text-white duration-300">
+                        Voir les chambres
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section des chiffres clés -->
+        <div class="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <!-- Chiffre 1 -->
+            <div class="bg-[var(--second)] p-8 rounded-lg hover:shadow-lg transition-all duration-300">
+                <h3 class="text-4xl font-bold text-[var(--beige)]">25+</h3>
+                <p class="text-gray-600">Années d'expérience</p>
+            </div>
+            <!-- Chiffre 2 -->
+            <div class="bg-[var(--second)] p-8 rounded-lg hover:shadow-lg transition-all duration-300">
+                <h3 class="text-4xl font-bold text-[var(--beige)]">10k+</h3>
+                <p class="text-gray-600">Clients satisfaits</p>
+            </div>
+            <!-- Chiffre 3 -->
+            <div class="bg-[var(--second)] p-8 rounded-lg hover:shadow-lg transition-all duration-300">
+                <h3 class="text-4xl font-bold text-[var(--beige)]">50+</h3>
+                <p class="text-gray-600">Chambres luxueuses</p>
+            </div>
+        </div>
+    </section>
+
+    <!--=========================Values Section====================-->
+    <section class="mx-8 md:mx-16 my-24">
+        <h2 class="text-3xl md:text-6xl font-semibold text-center mb-8 text-[var(--noir)] uppercase animate-slideDown">Nos Valeurs</h2>
+        <div class="flex items-center justify-center mb-12">
+            <img src="icon/decorated-pattern-2.svg" alt="Décoration" class="w-64">
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-[var(--second)] p-8 rounded-lg text-center hover:shadow-lg transition-all duration-300">
+                <div class="flex justify-center mb-4">
+                    <img src="icon/quality.png" alt="Qualité" class="w-12 h-12">
+                </div>
+                <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">Qualité</h3>
+                <p class="text-gray-600">Nous nous engageons à offrir des services de haute qualité pour garantir votre satisfaction.</p>
+            </div>
+            <div class="bg-[var(--second)] p-8 rounded-lg text-center hover:shadow-lg transition-all duration-300">
+                <div class="flex justify-center mb-4">
+                    <img src="icon/comfort.png" alt="Confort" class="w-12 h-12">
+                </div>
+                <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">Confort</h3>
+                <p class="text-gray-600">Votre confort est notre priorité. Nous veillons à ce que chaque détail soit parfait.</p>
+            </div>
+            <div class="bg-[var(--second)] p-8 rounded-lg text-center hover:shadow-lg transition-all duration-300">
+                <div class="flex justify-center mb-4">
+                    <img src="icon/service.png" alt="Service" class="w-12 h-12">
+                </div>
+                <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">Service</h3>
+                <p class="text-gray-600">Notre équipe est dévouée à vous offrir un service personnalisé et attentionné.</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+{% endblock %}

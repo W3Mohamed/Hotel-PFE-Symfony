@@ -1,0 +1,182 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <style>
+        @keyframes slideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-slideDown {
+            animation: slideDown 0.3s ease-out;
+        }
+        /* Style personnalisé pour les checkbox */
+        .custom-checkbox {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--beige);
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .custom-checkbox:checked {
+            background-color: var(--beige);
+            border-color: var(--beige);
+        }
+        .custom-checkbox:checked::after {
+            content: "✓";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--blanc);
+            font-size: 14px;
+        }
+    </style>
+<body class="font-[Funnel Sans]">
+
+    <!--=========================Détails de la Chambre====================-->
+    <section class="mx-8 md:mx-16 my-24">
+        <!-- Titre de la section -->
+        <h2 class="text-3xl md:text-6xl font-semibold text-center mb-8 text-[var(--noir)] uppercase animate-slideDown">
+            Détails de la Chambre
+        </h2>
+
+        <!-- Décoration (motif) -->
+        <div class="flex items-center justify-center mb-12">
+            <img src="icon/decorated-pattern-2.svg" alt="Décoration" class="w-64">
+        </div>
+
+        <!-- Contenu de la page -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+            <!-- Galerie d'images avec Splide.js -->
+            <div class="space-y-4">
+                <!-- Image principale -->
+                <div class="splide">
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            <li class="splide__slide">
+                                <img src="img/chambres/pexels-heyho-6284232.jpg" alt="Chambre Standard" class="w-full h-96 object-cover rounded-lg">
+                            </li>
+                            <li class="splide__slide">
+                                <img src="img/chambres/pexels-jvdm-1457845.jpg" alt="Chambre Standard" class="w-full h-96 object-cover rounded-lg">
+                            </li>
+                            <li class="splide__slide">
+                                <img src="img/chambres/pexels-heyho-7535037.jpg" alt="Chambre Standard" class="w-full h-96 object-cover rounded-lg">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Vignettes des images secondaires -->
+                <div class="splide splide--thumbnails">
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            <li class="splide__slide">
+                                <img src="img/chambres/pexels-heyho-6284232.jpg" alt="Chambre Standard" class="w-full h-24 object-cover rounded-lg cursor-pointer">
+                            </li>
+                            <li class="splide__slide">
+                                <img src="img/chambres/pexels-jvdm-1457845.jpg" alt="Chambre Standard" class="w-full h-24 object-cover rounded-lg cursor-pointer">
+                            </li>
+                            <li class="splide__slide">
+                                <img src="img/chambres/pexels-heyho-7535037.jpg" alt="Chambre Standard" class="w-full h-24 object-cover rounded-lg cursor-pointer">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Détails de la chambre -->
+            <div class="space-y-6">
+                <h3 class="text-4xl font-semibold text-[var(--noir)]">Chambre Standard</h3>
+                <p class="text-gray-600">Une chambre confortable avec tout le nécessaire pour un séjour agréable. Profitez d'un lit double, d'une salle de bain privée, d'une télévision et d'une connexion Wi-Fi gratuite.</p>
+                <p class="text-2xl font-bold text-[var(--beige)]">€100 / nuit</p>
+
+                <!-- Équipements inclus -->
+                <div class="space-y-4">
+                    <h4 class="text-xl font-semibold text-[var(--noir)]">Équipements inclus :</h4>
+                    <ul class="text-gray-600 space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-wifi text-[var(--beige)] mr-2"></i>
+                            Wi-Fi gratuit
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-tv text-[var(--beige)] mr-2"></i>
+                            Télévision
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-bed text-[var(--beige)] mr-2"></i>
+                            Lit double
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-bath text-[var(--beige)] mr-2"></i>
+                            Salle de bain privée
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Services supplémentaires avec des checkbox modernes -->
+                <div class="space-y-4">
+                    <h4 class="text-xl font-semibold text-[var(--noir)]">Services supplémentaires :</h4>
+                    <ul class="text-gray-600 space-y-2">
+                        <li class="flex items-center justify-between p-4 bg-[var(--second)] rounded-lg">
+                            <span>Petit-déjeuner (€10/jour)</span>
+                            <input type="checkbox" class="custom-checkbox">
+                        </li>
+                        <li class="flex items-center justify-between p-4 bg-[var(--second)] rounded-lg">
+                            <span>Accès au spa (€20/jour)</span>
+                            <input type="checkbox" class="custom-checkbox">
+                        </li>
+                        <li class="flex items-center justify-between p-4 bg-[var(--second)] rounded-lg">
+                            <span>Service de chambre 24/7 (€15/jour)</span>
+                            <input type="checkbox" class="custom-checkbox">
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Bouton "Ajouter au panier" -->
+                <a href="/panier" class="bg-[var(--beige)] text-white py-3 px-8 rounded-md font-semibold hover:bg-black duration-300 block text-center">
+                    Ajouter au panier
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Script pour initialiser Splide.js -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialisation du carousel principal
+            var main = new Splide('.splide', {
+                type: 'fade', // Transition en fondu
+                heightRatio: 0.6, // Ratio de hauteur
+                pagination: false, // Désactive la pagination par défaut
+                arrows: false, // Désactive les flèches par défaut
+            });
+    
+            // Initialisation du carousel des vignettes
+            var thumbnails = new Splide('.splide--thumbnails', {
+                fixedWidth: 100, // Largeur fixe des vignettes
+                fixedHeight: 100, // Hauteur fixe des vignettes
+                gap: 10, // Espacement entre les vignettes
+                rewind: true, // Permet de revenir au début après la fin
+                pagination: false, // Désactive la pagination
+                isNavigation: true, // Active la navigation
+                focus: 'center', // Centre la vignette active
+            });
+    
+            // Synchronisation des deux carousels
+            main.sync(thumbnails);
+            main.mount();
+            thumbnails.mount();
+        });
+    </script>
+</body>
+{% endblock %}

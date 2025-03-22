@@ -1,0 +1,126 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <style>
+        @keyframes slideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-slideDown {
+            animation: slideDown 0.3s ease-out;
+        }
+    </style>
+
+    <!--=========================Hero Section====================-->
+    <section class="relative bg-[linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url('img/reservation-hero.jpg')] bg-center bg-cover h-96 flex items-center justify-center">
+        <div class="text-center text-white">
+            <h1 class="text-5xl font-semibold">Réservez votre séjour</h1>
+            <p class="mt-4 text-lg">Choisissez vos chambres et services pour une expérience inoubliable.</p>
+        </div>
+    </section>
+
+    <!--=========================Sélection des Chambres====================-->
+    <section id="selection-chambres" class="mx-8 md:mx-16 my-24">
+        <h2 class="text-3xl md:text-6xl font-semibold text-center mb-8 text-[var(--noir)] uppercase animate-slideDown">
+            Choisissez vos chambres
+        </h2>
+        <div class="flex items-center justify-center mb-12">
+            <img src="icon/decorated-pattern-2.svg" alt="Décoration" class="w-64">
+        </div>
+
+        <!-- Liste des chambres -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Chambre 1 -->
+            <div class="bg-white shadow-2xl rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:scale-105 group">
+                <div class="relative">
+                    <!-- Image de la chambre -->
+                    <img src="img/chambres/pexels-heyho-6284232.jpg" alt="Chambre Standard" class="w-full h-64 object-cover">
+                    <!-- Icônes des équipements -->
+                    <div class="absolute bottom-4 left-4 flex space-x-2">
+                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                            <img src="icon/bed.png" alt="Lit" class="w-6 h-6">
+                        </div>
+                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                            <img src="icon/wifi.png" alt="Wi-Fi" class="w-6 h-6">
+                        </div>
+                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                            <img src="icon/tv.png" alt="TV" class="w-6 h-6">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">Chambre Standard</h3>
+                    <p class="text-gray-600 mb-4">Une chambre confortable avec tout le nécessaire pour un séjour agréable.</p>
+                    <div class="flex items-center justify-between">
+                        <p class="text-lg font-bold text-[var(--beige)]">€100 / nuit</p>
+                        <a href="/detail" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black duration-300">Voir plus</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chambre 2 -->
+            <div class="bg-white shadow-2xl rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:scale-105 group">
+                <div class="relative">
+                    <img src="img/chambres/pexels-kadiravsarr-24877168.jpg" alt="Chambre Deluxe" class="w-full h-64 object-cover">
+                    <div class="absolute bottom-4 left-4 flex space-x-2">
+                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                            <img src="icon/bed.png" alt="Lit" class="w-6 h-6">
+                        </div>
+                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                            <img src="icon/wifi.png" alt="Wi-Fi" class="w-6 h-6">
+                        </div>
+                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                            <img src="icon/tv.png" alt="TV" class="w-6 h-6">
+                        </div>
+                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                            <img src="icon/coffee.png" alt="Café" class="w-6 h-6">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">Chambre Deluxe</h3>
+                    <p class="text-gray-600 mb-4">Profitez d'un espace plus grand avec des équipements haut de gamme.</p>
+                    <div class="flex items-center justify-between">
+                        <p class="text-lg font-bold text-[var(--beige)]">€150 / nuit</p>
+                        <a href="/detail" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black duration-300">Voir plus</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chambre 3 -->
+            <div class="bg-white shadow-2xl rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:scale-105 group">
+                <div class="relative">
+                    <img src="img/chambres/pexels-heyho-7535037.jpg" alt="Suite Présidentielle" class="w-full h-64 object-cover">
+                    <div class="absolute bottom-4 left-4 flex space-x-2">
+                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                            <img src="icon/bed.png" alt="Lit" class="w-6 h-6">
+                        </div>
+                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                            <img src="icon/wifi.png" alt="Wi-Fi" class="w-6 h-6">
+                        </div>
+                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                            <img src="icon/tv.png" alt="TV" class="w-6 h-6">
+                        </div>
+                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                            <img src="icon/bathtub.png" alt="Baignoire" class="w-6 h-6">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">Suite Présidentielle</h3>
+                    <p class="text-gray-600 mb-4">Un luxe ultime avec une vue imprenable et des services exclusifs.</p>
+                    <div class="flex items-center justify-between">
+                        <p class="text-lg font-bold text-[var(--beige)]">€300 / nuit</p>
+                        <a href="/detail" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black duration-300">Voir plus</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

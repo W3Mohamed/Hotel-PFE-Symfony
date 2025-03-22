@@ -1,17 +1,201 @@
-<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+        <title>{% block title %}Hotel Roxal{% endblock %}</title>
+        <!-- Tailwind CSS -->
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+        <!-- Font Awesome pour les icônes -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="icon" type="image/x-icon" href="img/logo_2.png">
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Funnel+Display:wght@300..800&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    
+        <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+        <script src="js/script.js"></script>
     </head>
     <body>
+        <style>
+            :root {
+                --noir: #010101;
+                --blanc: #ffffff;
+                --beige: #e5bd43;
+                --second: #fafafa;
+            }
+        </style>
+        {% block header %}
+            <!--=========================Navbar====================-->
+            <nav class="fixed top-0 left-0 z-50 w-full p-4 bg-[var(--noir)] bg-opacity-90 backdrop-blur-sm border-b border-[var(--second)]">
+                <div class="container mx-auto flex items-center justify-between lg:justify-around">
+                    <!-- Logo -->
+                    <div class="logo">
+                        <img src="img/logo.png" alt="Hotel Roxal" class="w-24 hover:scale-105 transition-transform duration-300">
+                    </div>
+
+                    <!-- Menu pour mobile -->
+                    <div class="lg:hidden w-8 cursor-pointer navBtn">
+                        <img src="icon/menu.png" alt="Menu" class="w-full hover:rotate-90 transition-transform duration-300">
+                    </div>
+
+                    <!-- Liens de navigation -->
+                    <ul class="hidden lg:flex items-center gap-8 text-lg">
+                        <li>
+                            <a href="/index" class="text-[var(--blanc)] uppercase hover:text-[var(--beige)] transition duration-300 relative group">
+                                Accueil
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--beige)] transition-all duration-300 group-hover:w-full"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/chambres" class="text-[var(--blanc)] uppercase hover:text-[var(--beige)] transition duration-300 relative group">
+                                Chambres
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--beige)] transition-all duration-300 group-hover:w-full"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/propos" class="text-[var(--blanc)] uppercase hover:text-[var(--beige)] transition duration-300 relative group">
+                                À propos
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--beige)] transition-all duration-300 group-hover:w-full"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/index#services" class="text-[var(--blanc)] uppercase hover:text-[var(--beige)] transition duration-300 relative group">
+                                Services
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--beige)] transition-all duration-300 group-hover:w-full"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/index#offres" class="text-[var(--blanc)] uppercase hover:text-[var(--beige)] transition duration-300 relative group">
+                                Offres
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--beige)] transition-all duration-300 group-hover:w-full"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/contact" class="text-[var(--blanc)] uppercase hover:text-[var(--beige)] transition duration-300 relative group">
+                                Contactez-nous
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--beige)] transition-all duration-300 group-hover:w-full"></span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Bouton de réservation -->
+                    <a href="/panier" class="hidden lg:block bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black hover:scale-105 transition duration-300">
+                        Panier
+                    </a>
+                </div>
+
+                <!-- Menu mobile (dépliant) -->
+                <ul class="lg:hidden hidden flex-col bg-[var(--noir)] bg-opacity-90 backdrop-blur-sm mt-4 p-4 space-y-4 navbar animate-slideDown">
+                    <li>
+                        <a href="/index" class="text-[var(--blanc)] uppercase hover:text-[var(--beige)] transition duration-300">
+                            Accueil
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/chambres" class="text-[var(--blanc)] uppercase hover:text-[var(--beige)] transition duration-300">
+                            Chambres
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/propos" class="text-[var(--blanc)] uppercase hover:text-[var(--beige)] transition duration-300">
+                            À propos
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/index#services" class="text-[var(--blanc)] uppercase hover:text-[var(--beige)] transition duration-300">
+                            Services
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/index#offres" class="text-[var(--blanc)] uppercase hover:text-[var(--beige)] transition duration-300">
+                            Offres
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/contact" class="text-[var(--blanc)] uppercase hover:text-[var(--beige)] transition duration-300">
+                            Contactez-nous
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/panier" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black transition duration-300 text-center">
+                            Panier
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        {% endblock %}
+
         {% block body %}{% endblock %}
+
+        {% block footer %}
+            <!--=========================Footer====================-->
+            <footer class="bg-[var(--noir)] text-[var(--blanc)] py-12">
+                <div class="container mx-auto px-8 lg:px-16">
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                        <!-- About Section -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">À propos de nous</h3>
+                            <p class="text-gray-400">Découvrez un havre de paix où luxe et confort se rencontrent pour créer une expérience inoubliable.</p>
+                            <div class="mt-4">
+                                <img src="img/logo.png" alt="Hotel Roxal" class="w-24">
+                            </div>
+                        </div>
+
+                        <!-- Quick Links Section -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Liens rapides</h3>
+                            <ul class="space-y-2">
+                                <li><a href="/index" class="text-gray-400 hover:text-[var(--beige)] duration-300">Accueil</a></li>
+                                <li><a href="/chambres" class="text-gray-400 hover:text-[var(--beige)] duration-300">Chambres</a></li>
+                                <li><a href="/propos" class="text-gray-400 hover:text-[var(--beige)] duration-300">À propos</a></li>
+                                <li><a href="/index#services" class="text-gray-400 hover:text-[var(--beige)] duration-300">Services</a></li>
+                                <li><a href="/index#offres" class="text-gray-400 hover:text-[var(--beige)] duration-300">Offres</a></li>
+                                <li><a href="/contact" class="text-gray-400 hover:text-[var(--beige)] duration-300">Contactez-nous</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Contactez-nous</h3>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>123 Rue de l'Hôtel, Ville</li>
+                                <li>+33 123 456 789</li>
+                                <li>info@hotelroxal.com</li>
+                            </ul>
+                            <div class="mt-4">
+                                <p class="text-gray-400">Suivez-nous :</p>
+                                <div class="flex space-x-4 mt-2">
+                                    <a href="#" class="text-gray-400 hover:text-[var(--beige)] duration-300">
+                                        <img src="icon/facebook.png" alt="Facebook" class="w-6 h-6">
+                                    </a>
+                                    <a href="#" class="text-gray-400 hover:text-[var(--beige)] duration-300">
+                                        <img src="icon/twitter.png" alt="Twitter" class="w-6 h-6">
+                                    </a>
+                                    <a href="#" class="text-gray-400 hover:text-[var(--beige)] duration-300">
+                                        <img src="icon/instagram.png" alt="Instagram" class="w-6 h-6">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Newsletter Section -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Newsletter</h3>
+                            <p class="text-gray-400 mb-4">Abonnez-vous pour recevoir nos offres exclusives.</p>
+                            <form class="flex">
+                                <input type="email" placeholder="Votre email" class="p-2 rounded-l-sm bg-gray-700 text-white w-full">
+                                <button type="submit" class="bg-[var(--beige)] text-white px-4 rounded-r-sm hover:bg-black duration-300">S'abonner</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Copyright Section -->
+                    <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                        <p class="text-gray-400">&copy; 2025 Hôtel Roxal. Tous droits réservés.</p>
+                    </div>
+                </div>
+            </footer>
+        {% endblock %}
     </body>
 </html>

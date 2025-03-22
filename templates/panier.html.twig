@@ -1,0 +1,148 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <style>
+        @keyframes slideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-slideDown {
+            animation: slideDown 0.3s ease-out;
+        }
+        .hover-effect {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="font-[Funnel Sans] bg-[var(--second)]">
+
+    <!--=========================Hero Section====================-->
+    <section class="relative bg-[url('img/about1.jpg')] bg-center bg-cover h-96 flex items-center justify-center text-white text-center">
+        <div class="p-8">
+            <h1 class="text-5xl font-bold mb-4">Votre Panier</h1>
+            <p class="text-lg">Finalisez votre réservation pour un séjour inoubliable.</p>
+        </div>
+    </section>
+
+    <!--=========================Contenu du Panier====================-->
+    <section class="container mx-auto my-12 p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Votre Sélection -->
+            <div class="lg:col-span-2">
+                <h2 class="text-3xl font-semibold mb-6 text-[var(--noir)]">Votre Sélection</h2>
+                <div class="space-y-6">
+                    <!-- Article 1 -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover-effect">
+                        <div class="flex flex-col md:flex-row items-center gap-6">
+                            <img src="img/chambres/pexels-kadiravsarr-24877168.jpg" alt="Chambre Standard" class="w-32 h-24 rounded-lg object-cover">
+                            <div class="flex-1">
+                                <h3 class="text-xl font-semibold">Chambre Standard (3 nuits)</h3>
+                                <p class="text-gray-600">Inclus : Wi-Fi, TV, Petit-déjeuner</p>
+                                <ul class="text-sm text-gray-500 mt-2">
+                                    <li>Spa (+50€)</li>
+                                </ul>
+                                <div class="flex items-center gap-2 mt-4">
+                                    <button class="bg-gray-300 px-2 py-1 rounded hover:bg-gray-400">-</button>
+                                    <span>3</span>
+                                    <button class="bg-gray-300 px-2 py-1 rounded hover:bg-gray-400">+</button>
+                                </div>
+                            </div>
+                            <p class="text-xl font-bold text-[var(--beige)]">350€</p>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Article 2 -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover-effect">
+                        <div class="flex flex-col md:flex-row items-center gap-6">
+                            <img src="img/chambres/pexels-alexander-mass-748453803-27638171.jpg" alt="Suite Présidentielle" class="w-32 h-24 rounded-lg object-cover">
+                            <div class="flex-1">
+                                <h3 class="text-xl font-semibold">Suite Présidentielle (2 nuits)</h3>
+                                <p class="text-gray-600">Inclus : Wi-Fi, TV, Petit-déjeuner</p>
+                                <ul class="text-sm text-gray-500 mt-2">
+                                    <li>Navette aéroport (+20€)</li>
+                                </ul>
+                                <div class="flex items-center gap-2 mt-4">
+                                    <button class="bg-gray-300 px-2 py-1 rounded hover:bg-gray-400">-</button>
+                                    <span>2</span>
+                                    <button class="bg-gray-300 px-2 py-1 rounded hover:bg-gray-400">+</button>
+                                </div>
+                            </div>
+                            <p class="text-xl font-bold text-[var(--beige)]">620€</p>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Récapitulatif et Paiement -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <form action="/reservation">
+                    <h2 class="text-3xl font-semibold mb-6 text-[var(--noir)]">Récapitulatif</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <p>Chambre Standard (3 nuits)</p>
+                            <p class="font-bold">300€</p>
+                        </div>
+                        <div class="flex justify-between">
+                            <p>Suite Présidentielle (2 nuits)</p>
+                            <p class="font-bold">600€</p>
+                        </div>
+                        <div class="flex justify-between">
+                            <p>Services supplémentaires</p>
+                            <p class="font-bold">70€</p>
+                        </div>
+                        <hr class="my-4">
+                        <div class="flex justify-between">
+                            <p class="font-bold">Total</p>
+                            <p class="text-xl font-bold text-[var(--beige)]">970€</p>
+                        </div>
+                    </div>
+
+                    <!-- Code promo -->
+                    <div class="mt-6">
+                        <input type="text" placeholder="Code promo" class="w-full p-2 border rounded">
+                        <button class="w-full mt-2 bg-[var(--beige)] text-white py-2 rounded hover:bg-black">Appliquer</button>
+                    </div>
+
+                    <!-- Mode de paiement -->
+                    <div class="mt-6">
+                        <h3 class="text-xl font-semibold mb-4">Mode de paiement</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="payment" checked> Carte Bancaire
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="payment"> PayPal
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="payment"> Payer à l’arrivée
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Bouton de finalisation -->
+                    <button class="w-full mt-6 bg-green-500 text-white py-2 rounded hover:bg-green-700">
+                        Finaliser la réservation
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+</body>
+{% endblock %}
