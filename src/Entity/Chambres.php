@@ -31,7 +31,7 @@ class Chambres
     #[ORM\Column]
     private ?int $capacite = null;
 
-    #[ORM\Column(type: Types::STRING, length: 10, enumType: StatusEnum::class)]
+    #[ORM\Column(type: 'string', enumType: StatusEnum::class, length: 10)]
     private StatusEnum  $status;
 
     #[ORM\Column(length: 255)]
