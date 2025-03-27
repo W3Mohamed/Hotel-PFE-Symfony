@@ -51,14 +51,6 @@ final class HotelController extends AbstractController
         ]);
     }
 
-    #[Route('/panier', name: 'panier')]
-    public function panier(): Response
-    {
-        return $this->render('panier.html.twig', [
-            'controller_name' => 'HotelController',
-        ]);
-    }
-
     #[Route('/propos', name: 'propos')]
     public function propos(): Response
     {
