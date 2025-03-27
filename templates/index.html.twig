@@ -148,173 +148,34 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Room 1 -->
-            <div class="bg-white shadow-2xl rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:scale-105 group">
-                <div class="relative">
-                    <!-- Image de la chambre -->
-                    <img src="img/chambres/pexels-heyho-6284232.jpg" alt="Chambre Standard" class="w-full h-64 object-cover">
-                    <!-- Icônes des équipements -->
-                    <div class="absolute bottom-4 left-4 flex space-x-2">
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/bed.png" alt="Lit" class="w-6 h-6">
+            {% for chambre in chambres %}      
+                <div class="bg-white shadow-2xl rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:scale-105 group">
+                    <div class="relative">
+                        <!-- Image de la chambre -->
+                        <img src="img/chambres/{{ chambre.image }}" alt="{{ chambre.image }}" class="w-full h-64 object-cover">
+                        <!-- Icônes des équipements -->
+                        <div class="absolute bottom-4 left-4 flex space-x-2">
+                            <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                                <img src="icon/bed.png" alt="Lit" class="w-6 h-6">
+                            </div>
+                            <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                                <img src="icon/wifi.png" alt="Wi-Fi" class="w-6 h-6">
+                            </div>
+                            <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
+                                <img src="icon/tv.png" alt="TV" class="w-6 h-6">
+                            </div>
                         </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/wifi.png" alt="Wi-Fi" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/tv.png" alt="TV" class="w-6 h-6">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">{{chambre.libelle}}</h3>
+                        <p class="text-gray-600 mb-4">{{chambre.petitDesc}}</p>
+                        <div class="flex items-center justify-between">
+                            <p class="text-lg font-bold text-[var(--beige)]">€{{chambre.prix}} / nuit</p>
+                            <a href="/detail/{{chambre.id}}" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black duration-300">Voir plus</a>
                         </div>
                     </div>
                 </div>
-                <div class="p-6">
-                    <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">Chambre Standard</h3>
-                    <p class="text-gray-600 mb-4">Une chambre confortable avec tout le nécessaire pour un séjour agréable.</p>
-                    <div class="flex items-center justify-between">
-                        <p class="text-lg font-bold text-[var(--beige)]">€100 / nuit</p>
-                        <a href="/detail" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black duration-300">Voir plus</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Room 2 -->
-            <div class="bg-white shadow-2xl rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:scale-105 group">
-                <div class="relative">
-                    <img src="img/chambres/pexels-kadiravsarr-24877168.jpg" alt="Chambre Deluxe" class="w-full h-64 object-cover">
-                    <div class="absolute bottom-4 left-4 flex space-x-2">
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/bed.png" alt="Lit" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/wifi.png" alt="Wi-Fi" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/tv.png" alt="TV" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/coffee.png" alt="Café" class="w-6 h-6">
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">Chambre Deluxe</h3>
-                    <p class="text-gray-600 mb-4">Profitez d'un espace plus grand avec des équipements haut de gamme.</p>
-                    <div class="flex items-center justify-between">
-                        <p class="text-lg font-bold text-[var(--beige)]">€150 / nuit</p>
-                        <a href="/detail" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black duration-300">Voir plus</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Room 3 -->
-            <div class="bg-white shadow-2xl rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:scale-105 group">
-                <div class="relative">
-                    <img src="img/chambres/pexels-heyho-7535037.jpg" alt="Suite Présidentielle" class="w-full h-64 object-cover">
-                    <div class="absolute bottom-4 left-4 flex space-x-2">
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/bed.png" alt="Lit" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/wifi.png" alt="Wi-Fi" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/tv.png" alt="TV" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/bathtub.png" alt="Baignoire" class="w-6 h-6">
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">Suite Présidentielle</h3>
-                    <p class="text-gray-600 mb-4">Un luxe ultime avec une vue imprenable et des services exclusifs.</p>
-                    <div class="flex items-center justify-between">
-                        <p class="text-lg font-bold text-[var(--beige)]">€300 / nuit</p>
-                        <a href="/detail" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black duration-300">Voir plus</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Room 4 -->
-            <div class="bg-white shadow-2xl rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:scale-105 group">
-                <div class="relative">
-                    <img src="img/chambres/pexels-jvdm-1457845.jpg" alt="Suite Présidentielle" class="w-full h-64 object-cover">
-                    <div class="absolute bottom-4 left-4 flex space-x-2">
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/bed.png" alt="Lit" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/wifi.png" alt="Wi-Fi" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/tv.png" alt="TV" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/bathtub.png" alt="Baignoire" class="w-6 h-6">
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">Chambre Familiale</h3>
-                    <p class="text-gray-600 mb-4">Idéale pour les familles, avec un espace spacieux et des lits supplémentaires.</p>
-                    <div class="flex items-center justify-between">
-                        <p class="text-lg font-bold text-[var(--beige)]">€180 / nuit</p>
-                        <a href="/detail" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black duration-300">Voir plus</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Room 5 -->
-            <div class="bg-white shadow-2xl rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:scale-105 group">
-                <div class="relative">
-                    <img src="img/chambres/pexels-lucaluperto-19045887.jpg" alt="Chambre Vue Mer" class="w-full h-64 object-cover">
-                    <div class="absolute bottom-4 left-4 flex space-x-2">
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/bed.png" alt="Lit" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/wifi.png" alt="Wi-Fi" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/tv.png" alt="TV" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/bathtub.png" alt="Baignoire" class="w-6 h-6">
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">Chambre Vue Mer</h3>
-                    <p class="text-gray-600 mb-4">Profitez d'une vue magnifique sur la mer depuis votre chambre.</p>
-                    <div class="flex items-center justify-between">
-                        <p class="text-lg font-bold text-[var(--beige)]">€220 / nuit</p>
-                        <a href="/detail" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black duration-300">Voir plus</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Room 6 -->
-            <div class="bg-white shadow-2xl rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:scale-105 group">
-                <div class="relative">
-                    <img src="img/chambres/pexels-alexander-mass-748453803-27638171.jpg" alt="Chambre économique" class="w-full h-64 object-cover">
-                    <div class="absolute bottom-4 left-4 flex space-x-2">
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/bed.png" alt="Lit" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/wifi.png" alt="Wi-Fi" class="w-6 h-6">
-                        </div>
-                        <div class="bg-[var(--beige)] p-2 rounded-full flex items-center justify-center shadow-md">
-                            <img src="icon/tv.png" alt="TV" class="w-6 h-6">
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h3 class="text-2xl font-semibold mb-2 text-[var(--noir)]">Chambre Économique</h3>
-                    <p class="text-gray-600 mb-4">Une option économique sans compromis sur le confort.</p>
-                    <div class="flex items-center justify-between">
-                        <p class="text-lg font-bold text-[var(--beige)]">€80 / nuit</p>
-                        <a href="/detail" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black duration-300">Voir plus</a>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </section>
 
@@ -361,45 +222,20 @@
             <img src="icon/decorated-pattern-2.svg" alt="Décoration" class="w-64">
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Service 1: Spa -->
-            <div class="bg-white shadow-lg rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:scale-105">
-                <img src="img/services/spa.jpg" alt="Spa" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <div class="flex items-center mb-4">
-                        <img src="icon/spa.png" alt="Spa" class="w-8 h-8 mr-2">
-                        <h3 class="text-2xl font-semibold text-[var(--noir)]">Spa & Bien-être</h3>
+            <!-- Service -->
+            {% for service in services %}
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:scale-105">
+                    <img src="img/services/{{service.image}}" alt="{{service.libelle}}" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <img src="icon/spa.png" alt="Spa" class="w-8 h-8 mr-2">
+                            <h3 class="text-2xl font-semibold text-[var(--noir)]">{{service.libelle}}</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">{{ service.description }}</p>
+                        <p class="text-lg font-bold text-[var(--beige)]">À partir de €{{ service.prix }}</p>
                     </div>
-                    <p class="text-gray-600 mb-4">Détendez-vous avec nos soins spa exclusifs et nos massages relaxants.</p>
-                    <p class="text-lg font-bold text-[var(--beige)]">À partir de €50</p>
                 </div>
-            </div>
-
-            <!-- Service 2: Pension Complète -->
-            <div class="bg-white shadow-lg rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:scale-105">
-                <img src="img/services/pension.jpg" alt="Pension Complète" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <div class="flex items-center mb-4">
-                        <img src="icon/food.png" alt="Pension Complète" class="w-8 h-8 mr-2">
-                        <h3 class="text-2xl font-semibold text-[var(--noir)]">Pension Complète</h3>
-                    </div>
-                    <p class="text-gray-600 mb-4">Profitez de nos formules tout inclus avec petit-déjeuner, déjeuner et dîner.</p>
-                    <p class="text-lg font-bold text-[var(--beige)]">À partir de €80/jour</p>
-                </div>
-            </div>
-
-            <!-- Service 4: Salle de Sport Haut de Gamme -->
-            <div class="bg-white shadow-lg rounded-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:scale-105">
-                <img src="img/services/sport.jpg" alt="Spa" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <div class="flex items-center mb-4">
-                        <img src="icon/sport.png" alt="Spa" class="w-8 h-8 mr-2">
-                        <h3 class="text-2xl font-semibold text-[var(--noir)]">Salle de Sport Haut de Gamme</h3>
-                    </div>
-                    <p class="text-gray-600 mb-4">Maintenez votre routine fitness dans notre salle de sport entièrement équipée.</p>
-                    <p class="text-lg font-bold text-[var(--beige)]">À partir de €30</p>
-                </div>
-            </div>
-
+            {% endfor %}
         </div>
     </section>
 

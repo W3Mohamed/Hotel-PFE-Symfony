@@ -51,7 +51,7 @@
 
         <!-- Décoration (motif) -->
         <div class="flex items-center justify-center mb-12">
-            <img src="icon/decorated-pattern-2.svg" alt="Décoration" class="w-64">
+            <img src="/icon/decorated-pattern-2.svg" alt="Décoration" class="w-64">
         </div>
 
         <!-- Contenu de la page -->
@@ -64,7 +64,7 @@
                     <div class="splide__track">
                         <ul class="splide__list">
                             <li class="splide__slide">
-                                <img src="img/chambres/pexels-heyho-6284232.jpg" alt="Chambre Standard" class="w-full h-96 object-cover rounded-lg">
+                                <img src="/img/chambres/{{chambre.image}}" alt="{{chambre.libelle}}" class="w-full h-96 object-cover rounded-lg">
                             </li>
                             <li class="splide__slide">
                                 <img src="img/chambres/pexels-jvdm-1457845.jpg" alt="Chambre Standard" class="w-full h-96 object-cover rounded-lg">
@@ -81,7 +81,7 @@
                     <div class="splide__track">
                         <ul class="splide__list">
                             <li class="splide__slide">
-                                <img src="img/chambres/pexels-heyho-6284232.jpg" alt="Chambre Standard" class="w-full h-24 object-cover rounded-lg cursor-pointer">
+                                <img src="/img/chambres/{{chambre.image}}" alt="{{chambre.libelle}}" class="w-full h-24 object-cover rounded-lg cursor-pointer">
                             </li>
                             <li class="splide__slide">
                                 <img src="img/chambres/pexels-jvdm-1457845.jpg" alt="Chambre Standard" class="w-full h-24 object-cover rounded-lg cursor-pointer">
@@ -96,9 +96,9 @@
 
             <!-- Détails de la chambre -->
             <div class="space-y-6">
-                <h3 class="text-4xl font-semibold text-[var(--noir)]">Chambre Standard</h3>
-                <p class="text-gray-600">Une chambre confortable avec tout le nécessaire pour un séjour agréable. Profitez d'un lit double, d'une salle de bain privée, d'une télévision et d'une connexion Wi-Fi gratuite.</p>
-                <p class="text-2xl font-bold text-[var(--beige)]">€100 / nuit</p>
+                <h3 class="text-4xl font-semibold text-[var(--noir)]">{{chambre.libelle}}</h3>
+                <p class="text-gray-600">{{chambre.description}}</p>
+                <p class="text-2xl font-bold text-[var(--beige)]">€{{chambre.prix}} / nuit</p>
 
                 <!-- Équipements inclus -->
                 <div class="space-y-4">
@@ -122,30 +122,26 @@
                         </li>
                     </ul>
                 </div>
+                <form method="POST" action="{{ path('panier')}}">
+                    <input type="hidden" name="chambre_id" value="{{ chambre.id }}">
+                    <!-- Services supplémentaires avec des checkbox modernes -->
+                    <div class="space-y-4">
+                        <h4 class="text-xl font-semibold text-[var(--noir)]">Services supplémentaires :</h4>
+                        <ul class="text-gray-600 space-y-2">
+                            {% for service in services %}
+                                <li class="flex items-center justify-between p-4 bg-[var(--second)] rounded-lg">
+                                    <span>{{service.libelle}} (€{{service.prix}}/jour)</span>
+                                    <input type="checkbox" name="services[]" value="{{ service.id }}" class="custom-checkbox">
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
 
-                <!-- Services supplémentaires avec des checkbox modernes -->
-                <div class="space-y-4">
-                    <h4 class="text-xl font-semibold text-[var(--noir)]">Services supplémentaires :</h4>
-                    <ul class="text-gray-600 space-y-2">
-                        <li class="flex items-center justify-between p-4 bg-[var(--second)] rounded-lg">
-                            <span>Petit-déjeuner (€10/jour)</span>
-                            <input type="checkbox" class="custom-checkbox">
-                        </li>
-                        <li class="flex items-center justify-between p-4 bg-[var(--second)] rounded-lg">
-                            <span>Accès au spa (€20/jour)</span>
-                            <input type="checkbox" class="custom-checkbox">
-                        </li>
-                        <li class="flex items-center justify-between p-4 bg-[var(--second)] rounded-lg">
-                            <span>Service de chambre 24/7 (€15/jour)</span>
-                            <input type="checkbox" class="custom-checkbox">
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Bouton "Ajouter au panier" -->
-                <a href="/panier" class="bg-[var(--beige)] text-white py-3 px-8 rounded-md font-semibold hover:bg-black duration-300 block text-center">
-                    Ajouter au panier
-                </a>
+                    <!-- Bouton "Ajouter au panier" -->
+                    <button type="submit" class="bg-[var(--beige)] text-white py-3 px-8 rounded-md font-semibold hover:bg-black duration-300 block text-center w-full">
+                        Ajouter au panier
+                    </button>
+                </form>
             </div>
         </div>
     </section>

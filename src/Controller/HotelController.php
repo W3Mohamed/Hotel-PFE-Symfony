@@ -2,6 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Chambres;
+use App\Entity\Services;
+use Doctrine\ORM\EntityManagerInterface;
+use PhpParser\Builder\Class_;
+use SebastianBergmann\Diff\Chunk;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -9,18 +14,22 @@ use Symfony\Component\Routing\Attribute\Route;
 final class HotelController extends AbstractController
 {
     #[Route('/index', name: 'accueil')]
-    public function index(): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
+        $chambres = $entityManager->getRepository(Chambres::class)->findBy([], ['id' => 'DESC'], 6);
+        $services = $entityManager->getRepository(Services::class)->findAll();
         return $this->render('index.html.twig', [
-            'controller_name' => 'HotelController',
+            'chambres' => $chambres,
+            'services' => $services,
         ]);
     }
 
     #[Route('/chambres', name: 'chambres')]
-    public function chambres(): Response
+    public function chambres(EntityManagerInterface $entityManager): Response
     {
+        $chambres = $entityManager->getRepository(Chambres::class)->findAll();
         return $this->render('chambres.html.twig', [
-            'controller_name' => 'HotelController',
+            'chambres' => $chambres,
         ]);
     }
 
@@ -32,11 +41,13 @@ final class HotelController extends AbstractController
         ]);
     }
 
-    #[Route('/detail', name: 'detail')]
-    public function detail(): Response
+    #[Route('/detail/{id}', methods:['GET'], name: 'detail')]
+    public function detail(EntityManagerInterface $entityManager,Chambres $chambre): Response
     {
+        $services = $entityManager->getRepository(Services::class)->findAll();
         return $this->render('detail.html.twig', [
-            'controller_name' => 'HotelController',
+            'chambre' => $chambre,
+            'services' => $services,
         ]);
     }
 
