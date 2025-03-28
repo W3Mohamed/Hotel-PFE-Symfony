@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class CartController extends AbstractController
 {
-    #[Route('/panier', name: 'panier')]
+    #[Route('/panier', name: 'ajout_panier', methods: ['POST'])]
     public function index(Request $request, EntityManagerInterface $em, SessionInterface $session): Response
     {
         // Récupération des données du formulaire
@@ -62,6 +62,34 @@ final class CartController extends AbstractController
         
         return $this->render('panier.html.twig', [
             'controller_name' => 'panier',
+            
         ]);
+    }
+
+    #[Route('/panier/delete/{id}', name: 'sup_chambre', methods: ['GET'])]
+    public function delete(int $id, EntityManagerInterface $em, SessionInterface $session):Response
+    {
+        $sessionId = $session->getId();
+        $panierChambre = $em->getRepository(PanierChambres::class)->find($id);
+
+        if (!$panierChambre) {
+            $this->addFlash('error', 'Chambre non trouvée dans votre panier.');
+            return $this->redirectToRoute('panier');
+        }
+
+        if ($panierChambre->getPanier()->getSessionId() !== $sessionId) {
+            $this->addFlash('error', 'Accès refusé.');
+            return $this->redirectToRoute('panier');
+        }
+
+         // Supprimer les services associés
+        foreach ($panierChambre->getPanierServices() as $service) {
+            $em->remove($service);
+        }
+        // Supprimer la chambre du panier
+        $em->remove($panierChambre);
+        $em->flush();
+
+        return $this->redirectToRoute('panier');
     }
 }

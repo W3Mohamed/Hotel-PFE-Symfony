@@ -41,51 +41,40 @@
             <div class="lg:col-span-2">
                 <h2 class="text-3xl font-semibold mb-6 text-[var(--noir)]">Votre Sélection</h2>
                 <div class="space-y-6">
+                    {% if chambres is empty %}
+                        <p>Votre panier est vide.</p>
+                    {% else %}
                     <!-- Article 1 -->
-                    <div class="bg-white p-6 rounded-lg shadow-lg hover-effect">
-                        <div class="flex flex-col md:flex-row items-center gap-6">
-                            <img src="img/chambres/pexels-kadiravsarr-24877168.jpg" alt="Chambre Standard" class="w-32 h-24 rounded-lg object-cover">
-                            <div class="flex-1">
-                                <h3 class="text-xl font-semibold">Chambre Standard (3 nuits)</h3>
-                                <p class="text-gray-600">Inclus : Wi-Fi, TV, Petit-déjeuner</p>
-                                <ul class="text-sm text-gray-500 mt-2">
-                                    <li>Spa (+50€)</li>
-                                </ul>
-                                <div class="flex items-center gap-2 mt-4">
-                                    <button class="bg-gray-300 px-2 py-1 rounded hover:bg-gray-400">-</button>
-                                    <span>3</span>
-                                    <button class="bg-gray-300 px-2 py-1 rounded hover:bg-gray-400">+</button>
+                     {% for panierChambre  in chambres %} 
+                        <div class="bg-white p-6 rounded-lg shadow-lg hover-effect">
+                            <div class="flex flex-col md:flex-row items-center gap-6">
+                                <img src="img/chambres/{{ panierChambre.chambre.image }} " alt="Chambre Standard" class="w-32 h-24 rounded-lg object-cover">
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-semibold">{{ panierChambre.chambre.libelle }} ({{ panierChambre.nbNuit }} nuits)</h3>
+                                    <p class="text-gray-600">Inclus : Wi-Fi, TV, Petit-déjeuner</p>
+                                    {% if panierChambre.panierServices is not empty %}
+                                    <ul class="text-sm text-gray-500 mt-2">
+                                        {% for panierService in panierChambre.panierServices %}
+                                            <li>{{ panierService.serviceId.libelle }} - {{ panierService.serviceId.prix }}€</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% else %}
+                                        <p class="text-sm text-gray-500 mt-2">Aucun service ajouté.</p>
+                                    {% endif %}
+                                    <div class="flex items-center gap-2 mt-4">
+                                        <button class="bg-gray-300 px-2 py-1 rounded hover:bg-gray-400">-</button>
+                                        <span>3</span>
+                                        <button class="bg-gray-300 px-2 py-1 rounded hover:bg-gray-400">+</button>
+                                    </div>
                                 </div>
+                                <p class="text-xl font-bold text-[var(--beige)]">350€</p>
+                                <a href="{{ path('sup_chambre', {'id': panierChambre.id}) }}" class="text-red-500 hover:text-red-700">
+                                    <i class="fas fa-trash"></i>
+                                </a>
                             </div>
-                            <p class="text-xl font-bold text-[var(--beige)]">350€</p>
-                            <button class="text-red-500 hover:text-red-700">
-                                <i class="fas fa-trash"></i>
-                            </button>
                         </div>
-                    </div>
-
-                    <!-- Article 2 -->
-                    <div class="bg-white p-6 rounded-lg shadow-lg hover-effect">
-                        <div class="flex flex-col md:flex-row items-center gap-6">
-                            <img src="img/chambres/pexels-alexander-mass-748453803-27638171.jpg" alt="Suite Présidentielle" class="w-32 h-24 rounded-lg object-cover">
-                            <div class="flex-1">
-                                <h3 class="text-xl font-semibold">Suite Présidentielle (2 nuits)</h3>
-                                <p class="text-gray-600">Inclus : Wi-Fi, TV, Petit-déjeuner</p>
-                                <ul class="text-sm text-gray-500 mt-2">
-                                    <li>Navette aéroport (+20€)</li>
-                                </ul>
-                                <div class="flex items-center gap-2 mt-4">
-                                    <button class="bg-gray-300 px-2 py-1 rounded hover:bg-gray-400">-</button>
-                                    <span>2</span>
-                                    <button class="bg-gray-300 px-2 py-1 rounded hover:bg-gray-400">+</button>
-                                </div>
-                            </div>
-                            <p class="text-xl font-bold text-[var(--beige)]">620€</p>
-                            <button class="text-red-500 hover:text-red-700">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
+                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
 
