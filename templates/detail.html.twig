@@ -41,7 +41,13 @@
         }
     </style>
 <body class="font-[Funnel Sans]">
-
+    {% for message in app.flashes('error') %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                swal("Erreur", "Cette chambre est déjà dans votre panier", "error");
+            });
+        </script>
+    {% endfor %}
     <!--=========================Détails de la Chambre====================-->
     <section class="mx-8 md:mx-16 my-24">
         <!-- Titre de la section -->
@@ -145,7 +151,6 @@
             </div>
         </div>
     </section>
-
     <!-- Script pour initialiser Splide.js -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {

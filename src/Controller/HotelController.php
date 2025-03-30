@@ -54,18 +54,50 @@ final class HotelController extends AbstractController
     #[Route('/panier', name: 'panier')]
     public function panier(SessionInterface $session, EntityManagerInterface $em): Response
     {
+        // $session->start();
         $sessionId = $session->getId();
+        dd($sessionId);
         $panier = $em->getRepository(Panier::class)->findOneBy(['session_id' => $sessionId]);
-
-         if (!$panier) {
+ 
+        // Si le panier n'existe pas, redirige directement avec un panier vide
+        if (!$panier) {
             return $this->render('panier.html.twig', [
                 'chambres' => [],
             ]);
-         }
+        }
+        $panierChambres = $panier->getPanierChambres();
+        // Si le panier est vide, on affiche un panier vide
+        if (empty($panierChambres)) {
+            return $this->render('panier.html.twig', [
+                'chambres' => [],
+            ]);
+        }
+        $totalServices = 0;
+        $total = 0;
+        foreach($panierChambres as $panierChambre){
+            $prixChambre = $panierChambre->getChambre()->getPrix() * $panierChambre->getNbNuit();
+            $totalServicesChambre = 0;
+            foreach ($panierChambre->getPanierServices() as $panierService) {
+                $totalServicesChambre += $panierService->getServiceId()->getPrix() * $panierChambre->getNbNuit();
+            }
+            $prixTotalChambre = $prixChambre + $totalServicesChambre; 
+            $totalServices += $totalServicesChambre;
+            $total += $prixTotalChambre;
+
+            $panierChambre->prixChambre = $prixChambre;
+            $panierChambre->prixTotalChambre = $prixTotalChambre;
+        }
+        $panierChambre->totalServices = $totalServices;
+        $panierChambre->total = $total;
 
         return $this->render('panier.html.twig', [
-            'chambres' => $panier->getPanierChambres(), // Liste des chambres ajoutées
+            'chambres' => $panierChambres, // Liste des chambres ajoutées
+            'prixTotalChambre' => $prixTotalChambre,
+            'prixChambre' => $prixChambre,
+            'totalServices' => $totalServices,
+            'total' => $total,
         ]);
+
     }
 
     #[Route('/propos', name: 'propos')]

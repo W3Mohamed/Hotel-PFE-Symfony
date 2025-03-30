@@ -29,8 +29,14 @@ final class CartController extends AbstractController
         if (!$chambre) {
             throw $this->createNotFoundException('Chambre non trouvée');
         }
-
+        // // Assurer que la session est démarrée
+        // if (!$session->isStarted()) {
+        //     $session->start();
+        // }
         $sessionId = $session->getId();
+        if (!$sessionId) {
+            throw new \Exception("L'ID de session est introuvable.");
+        }
         $panier = $em->getRepository(Panier::class)->findOneBy(['session_id' => $sessionId]);
 
         if (!$panier) {
@@ -38,6 +44,16 @@ final class CartController extends AbstractController
             $panier->setSessionId($sessionId);
             $panier->setDateCreation(new \DateTime());
             $em->persist($panier);
+            $em->flush();
+        }
+
+        $panierChambreExistant = $em->getRepository(PanierChambres::class)->findOneBy([
+            'panier' => $panier,
+            'chambre' => $chambre
+        ]);
+        if ($panierChambreExistant) {
+            $this->addFlash('error', 'Cette chambre est déjà dans votre panier.');
+            return $this->redirectToRoute('detail', ['id' => $chambreId]); // Redirection vers la page détail
         }
 
         // Ajouter la chambre au panier
@@ -60,10 +76,7 @@ final class CartController extends AbstractController
 
         $em->flush();
         
-        return $this->render('panier.html.twig', [
-            'controller_name' => 'panier',
-            
-        ]);
+        return $this->redirectToRoute('panier');
     }
 
     #[Route('/panier/delete/{id}', name: 'sup_chambre', methods: ['GET'])]
