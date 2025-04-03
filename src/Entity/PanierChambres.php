@@ -21,9 +21,6 @@ class PanierChambres
     #[ORM\ManyToOne(inversedBy: 'panierChambres')]
     private ?Chambres $chambre = null;
 
-    #[ORM\Column]
-    private ?int $nb_nuit = null;
-
     /**
      * @var Collection<int, PanierService>
      */
@@ -60,18 +57,6 @@ class PanierChambres
     public function setChambre(?Chambres $chambre): static
     {
         $this->chambre = $chambre;
-
-        return $this;
-    }
-
-    public function getNbNuit(): ?int
-    {
-        return $this->nb_nuit;
-    }
-
-    public function setNbNuit(int $nb_nuit): static
-    {
-        $this->nb_nuit = $nb_nuit;
 
         return $this;
     }

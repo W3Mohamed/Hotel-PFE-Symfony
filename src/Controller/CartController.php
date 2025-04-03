@@ -21,8 +21,12 @@ final class CartController extends AbstractController
     {
         // Récupération des données du formulaire
         $chambreId = $request->request->get('chambre_id');
+        $dateArrive = $request->request->get('dateArrive');
+        $dateDepart = $request->request->get('dateDepart');
+        $nbAdulte = $request->request->get('nbAdulte');
+        $nbEnfant = $request->request->get('nbEnfant');
         $servicesIds = $request->request->all('services',[]);// Tableau des services sélectionnés
-        $nbNuits = (int) $request->request->get('nb_nuit', 1); // Nombre de nuits, valeur par défaut = 1
+        //$nbNuits = (int) $request->request->get('nb_nuit', 1); // Nombre de nuits, valeur par défaut = 1
 
         // Vérifier si la chambre existe
         $chambre = $em->getRepository(Chambres::class)->find($chambreId);
@@ -42,6 +46,10 @@ final class CartController extends AbstractController
         if (!$panier) {
             $panier = new Panier();
             $panier->setSessionId($sessionId);
+            $panier->setDateArrive(new \DateTime($dateArrive));
+            $panier->setDateDepart(new \DateTime($dateDepart));
+            $panier->setNbAdulte($nbAdulte);
+            $panier->setNbEnfant($nbEnfant);
             $panier->setDateCreation(new \DateTime());
             $em->persist($panier);
             $em->flush();
@@ -60,7 +68,7 @@ final class CartController extends AbstractController
         $panierChambre = new PanierChambres();
         $panierChambre->setPanier($panier);
         $panierChambre->setChambre($chambre);
-        $panierChambre->setNbNuit($nbNuits);
+        //$panierChambre->setNbNuit($nbNuits);
         $em->persist($panierChambre);
         
         // Ajouter les services sélectionnés

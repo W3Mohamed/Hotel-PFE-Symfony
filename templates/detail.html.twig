@@ -130,6 +130,10 @@
                 </div>
                 <form method="POST" action="{{ path('ajout_panier')}}">
                     <input type="hidden" name="chambre_id" value="{{ chambre.id }}">
+                    <input type="hidden" name="dateArrive" value="{{ reservation_data.dateArrive|date('Y-m-d') }}">
+                    <input type="hidden" name="dateDepart" value="{{ reservation_data.dateDepart|date('Y-m-d') }}">
+                    <input type="hidden" name="nbAdulte" value="{{ reservation_data.nbAdulte }}">
+                    <input type="hidden" name="nbEnfant" value="{{ reservation_data.nbEnfant }}">
                     <!-- Services supplémentaires avec des checkbox modernes -->
                     <div class="space-y-4">
                         <h4 class="text-xl font-semibold text-[var(--noir)]">Services supplémentaires :</h4>

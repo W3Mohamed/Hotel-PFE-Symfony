@@ -59,7 +59,7 @@
                         <p class="text-gray-600 mb-4">{{chambre.petitDesc}}</p>
                         <div class="flex items-center justify-between">
                             <p class="text-lg font-bold text-[var(--beige)]">€{{chambre.prix}} / nuit</p>
-                            <a href="/detail/{{chambre.id}}" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black duration-300">Voir plus</a>
+                            <a href="{{ path('detail', {'id': chambre.id}) }}" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black duration-300">Voir plus</a>
                         </div>
                     </div>
                 </div>

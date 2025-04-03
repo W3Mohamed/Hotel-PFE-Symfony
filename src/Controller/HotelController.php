@@ -26,12 +26,41 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/chambres', name: 'chambres')]
-    public function chambres(EntityManagerInterface $entityManager): Response
+    public function chambres(Request $request,EntityManagerInterface $entityManager): Response
     {
+        $session = $request->getSession();
+        $reservationData = $session->get('reservation_data');
+
         $chambres = $entityManager->getRepository(Chambres::class)->findAll();
         return $this->render('chambres.html.twig', [
             'chambres' => $chambres,
+            'reservation_data' => $reservationData
         ]);
+    }
+
+    #[Route('/store-dates', name: 'store_dates')]
+    public function storeDates(Request $request, EntityManagerInterface $em): Response
+    {
+        $session = $request->getSession();
+        
+        // Valider les dates
+        $checkin = new \DateTime($request->query->get('checkin'));
+        $checkout = new \DateTime($request->query->get('checkout'));
+        
+        if ($checkin >= $checkout) {
+            $this->addFlash('error', 'La date de départ doit être après la date d\'arrivée');
+            return $this->redirectToRoute('accueil');
+        }
+
+        // Stocker en session
+        $session->set('reservation_data', [
+            'dateArrive' => $checkin,
+            'dateDepart' => $checkout,
+            'nbAdulte' => (int)$request->query->get('adults'),
+            'nbEnfant' => (int)$request->query->get('children')
+        ]);
+
+        return $this->redirectToRoute('chambres');
     }
 
     #[Route('/contact', name: 'contact')]
@@ -43,12 +72,16 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/detail/{id}', methods:['GET'], name: 'detail')]
-    public function detail(EntityManagerInterface $entityManager,Chambres $chambre): Response
+    public function detail(Request $request, EntityManagerInterface $entityManager, Chambres $chambre): Response
     {
+        $session = $request->getSession();
+        $reservationData = $session->get('reservation_data');
+        
         $services = $entityManager->getRepository(Services::class)->findAll();
         return $this->render('detail.html.twig', [
             'chambre' => $chambre,
             'services' => $services,
+            'reservation_data' => $reservationData
         ]);
     }
 
@@ -86,13 +119,14 @@ final class HotelController extends AbstractController
                 'chambres' => [],
             ]);
         }
+        $nbNuit = $panier->getDateArrive()->diff($panier->getDateDepart())->days;
         $totalServices = 0;
         $total = 0;
         foreach($panierChambres as $panierChambre){
-            $prixChambre = $panierChambre->getChambre()->getPrix() * $panierChambre->getNbNuit();
+            $prixChambre = $panierChambre->getChambre()->getPrix() * $nbNuit;
             $totalServicesChambre = 0;
             foreach ($panierChambre->getPanierServices() as $panierService) {
-                $totalServicesChambre += $panierService->getServiceId()->getPrix() * $panierChambre->getNbNuit();
+                $totalServicesChambre += $panierService->getServiceId()->getPrix() * $nbNuit;
             }
             $prixTotalChambre = $prixChambre + $totalServicesChambre; 
             $totalServices += $totalServicesChambre;
@@ -106,6 +140,7 @@ final class HotelController extends AbstractController
 
         return $this->render('panier.html.twig', [
             'chambres' => $panierChambres, // Liste des chambres ajoutées
+            'nbNuit' => $nbNuit,
             'prixTotalChambre' => $prixTotalChambre,
             'prixChambre' => $prixChambre,
             'totalServices' => $totalServices,
