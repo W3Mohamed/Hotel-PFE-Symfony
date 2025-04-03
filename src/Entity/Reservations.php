@@ -20,10 +20,10 @@ class Reservations
     private ?User $user_id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_depart = null;
+    private ?\DateTimeInterface $date_arrive = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_sortie = null;
+    private ?\DateTimeInterface $date_depart = null;
 
     #[ORM\Column(length: 30)]
     private ?string $status = null;
@@ -67,18 +67,6 @@ class Reservations
     public function setDateDepart(\DateTimeInterface $date_depart): static
     {
         $this->date_depart = $date_depart;
-
-        return $this;
-    }
-
-    public function getDateSortie(): ?\DateTimeInterface
-    {
-        return $this->date_sortie;
-    }
-
-    public function setDateSortie(\DateTimeInterface $date_sortie): static
-    {
-        $this->date_sortie = $date_sortie;
 
         return $this;
     }
@@ -133,6 +121,18 @@ class Reservations
                 $reservationChambre->setReservationId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateArrive(): ?\DateTimeInterface
+    {
+        return $this->date_arrive;
+    }
+
+    public function setDateArrive(\DateTimeInterface $date_arrive): static
+    {
+        $this->date_arrive = $date_arrive;
 
         return $this;
     }

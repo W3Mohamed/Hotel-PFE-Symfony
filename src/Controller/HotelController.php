@@ -52,15 +52,10 @@ final class HotelController extends AbstractController
         ]);
     }
 
-    #[Route('/panier', name: 'panier')]
+    #[Route('/panier', name: 'panier', methods: ['GET'])]
     public function panier(Request $request, EntityManagerInterface $em): Response
     {
         $session = $request->getSession();
-    
-        // Force le démarrage si non initiée
-        // if (!$session->isStarted()) {
-        //     $session->start();
-        // }
         $sessionId = $session->getId();
          // Pour vérifier que la session fonctionne, stockez quelque chose dedans
         if (!$session->has('test_value')) {
@@ -68,13 +63,13 @@ final class HotelController extends AbstractController
         }
         
         // Debug vérification
-        dd([
-            'session_id' => $sessionId,
-            'is_started' => $session->isStarted(),
-            'test_value' => $session->get('test_value'),
-            'all_data' => $session->all(),
-            'cookie_params' => session_get_cookie_params()
-        ]);
+        // dd([
+        //     'session_id' => $sessionId,
+        //     'is_started' => $session->isStarted(),
+        //     'test_value' => $session->get('test_value'),
+        //     'all_data' => $session->all(),
+        //     'cookie_params' => session_get_cookie_params()
+        // ]);
 
         $panier = $em->getRepository(Panier::class)->findOneBy(['session_id' => $sessionId]);
  
@@ -86,7 +81,7 @@ final class HotelController extends AbstractController
         }
         $panierChambres = $panier->getPanierChambres();
         // Si le panier est vide, on affiche un panier vide
-        if (empty($panierChambres)) {
+        if ($panierChambres->isEmpty()) {
             return $this->render('panier.html.twig', [
                 'chambres' => [],
             ]);

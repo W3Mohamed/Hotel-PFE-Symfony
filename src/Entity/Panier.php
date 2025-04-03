@@ -28,6 +28,18 @@ class Panier
     #[ORM\OneToMany(targetEntity: PanierChambres::class, mappedBy: 'panier')]
     private Collection $panierChambres;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $dateArrive = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $dateDepart = null;
+
+    #[ORM\Column]
+    private ?int $nbAdulte = null;
+
+    #[ORM\Column]
+    private ?int $nbEnfant = null;
+
     public function __construct()
     {
         $this->panierChambres = new ArrayCollection();
@@ -88,6 +100,54 @@ class Panier
                 $panierChambre->setPanier(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateArrive(): ?\DateTimeInterface
+    {
+        return $this->dateArrive;
+    }
+
+    public function setDateArrive(\DateTimeInterface $dateArrive): static
+    {
+        $this->dateArrive = $dateArrive;
+
+        return $this;
+    }
+
+    public function getDateDepart(): ?\DateTimeInterface
+    {
+        return $this->dateDepart;
+    }
+
+    public function setDateDepart(\DateTimeInterface $dateDepart): static
+    {
+        $this->dateDepart = $dateDepart;
+
+        return $this;
+    }
+
+    public function getNbAdulte(): ?int
+    {
+        return $this->nbAdulte;
+    }
+
+    public function setNbAdulte(int $nbAdulte): static
+    {
+        $this->nbAdulte = $nbAdulte;
+
+        return $this;
+    }
+
+    public function getNbEnfant(): ?int
+    {
+        return $this->nbEnfant;
+    }
+
+    public function setNbEnfant(int $nbEnfant): static
+    {
+        $this->nbEnfant = $nbEnfant;
 
         return $this;
     }
