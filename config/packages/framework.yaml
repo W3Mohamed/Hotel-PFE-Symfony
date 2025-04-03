@@ -1,33 +1,19 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
+    # ... autres configurations globales
 
-    # Note that the session will be started ONLY if you read or write from it.
-    session: true
-
-    #esi: true
-    #fragments: true
-
-when@test:
-    framework:
-        test: true
-        session:
-            storage_factory_id: session.storage.factory.mock_file
-# framework:
-#     secret: '%env(APP_SECRET)%'
-
-#     session:
-#         handler_id: null
-#         cookie_secure: auto      # Définit automatiquement `secure` si HTTPS
-#         cookie_samesite: lax     # Empêche Firefox / mode privé de bloquer la session
-#         cookie_httponly: true    # Protège contre le vol de cookies en JS
-#         storage_factory_id: session.storage.factory.native
-#         name: 'MYSESSID'         # Change le nom du cookie pour éviter les conflits
-#         cookie_lifetime: 86400   # 1 jour (évite la suppression rapide)
-#         gc_maxlifetime: 86400    # Durée de vie des sessions en base PHP
-
-# when@test:
-#     framework:
-#         test: true
-#         session:
-#             storage_factory_id: session.storage.factory.mock_file
+    session:
+        handler_id: session.handler.native_file
+        cookie_secure: auto  # 'auto' s'adapte à HTTP/HTTPS
+        cookie_samesite: 'lax'
+        cookie_httponly: true
+        cookie_path: '/'
+        name: 'APP_SESSID'
+        storage_factory_id: 'session.storage.factory.native'
+        save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
+        gc_maxlifetime: 14400
+        gc_probability: 1
+        gc_divisor: 100
+        sid_length: 32
+        sid_bits_per_character: 6

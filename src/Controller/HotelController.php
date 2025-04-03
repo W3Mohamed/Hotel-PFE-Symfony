@@ -7,6 +7,7 @@ use App\Entity\Panier;
 use App\Entity\Services;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -52,11 +53,29 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/panier', name: 'panier')]
-    public function panier(SessionInterface $session, EntityManagerInterface $em): Response
+    public function panier(Request $request, EntityManagerInterface $em): Response
     {
-        // $session->start();
+        $session = $request->getSession();
+    
+        // Force le démarrage si non initiée
+        // if (!$session->isStarted()) {
+        //     $session->start();
+        // }
         $sessionId = $session->getId();
-        dd($sessionId);
+         // Pour vérifier que la session fonctionne, stockez quelque chose dedans
+        if (!$session->has('test_value')) {
+            $session->set('test_value', 'Session test à ' . time());
+        }
+        
+        // Debug vérification
+        dd([
+            'session_id' => $sessionId,
+            'is_started' => $session->isStarted(),
+            'test_value' => $session->get('test_value'),
+            'all_data' => $session->all(),
+            'cookie_params' => session_get_cookie_params()
+        ]);
+
         $panier = $em->getRepository(Panier::class)->findOneBy(['session_id' => $sessionId]);
  
         // Si le panier n'existe pas, redirige directement avec un panier vide
