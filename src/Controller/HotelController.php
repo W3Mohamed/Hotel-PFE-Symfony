@@ -32,6 +32,11 @@ final class HotelController extends AbstractController
         $reservationData = $session->get('reservation_data');
 
         $chambres = $entityManager->getRepository(Chambres::class)->findAll();
+
+        if(!$reservationData){
+
+        }
+        
         return $this->render('chambres.html.twig', [
             'chambres' => $chambres,
             'reservation_data' => $reservationData
@@ -77,6 +82,21 @@ final class HotelController extends AbstractController
         $session = $request->getSession();
         $reservationData = $session->get('reservation_data');
         
+        if(!$reservationData){
+            $defaultCheckin = new \DateTime('tomorrow');
+            $defaultCheckout = new \DateTime('tomorrow +1 day');
+            
+            $reservationData = [
+                'dateArrive' => $defaultCheckin,
+                'dateDepart' => $defaultCheckout,
+                'nbAdulte' => 1,
+                'nbEnfant' => 0
+            ];
+            
+            // Optionnel : stocker en session pour consistance
+            $session->set('reservation_data', $reservationData);
+        }
+
         $services = $entityManager->getRepository(Services::class)->findAll();
         return $this->render('detail.html.twig', [
             'chambre' => $chambre,
