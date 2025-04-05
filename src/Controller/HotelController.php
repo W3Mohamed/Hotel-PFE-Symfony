@@ -212,10 +212,12 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/reservation', name: 'reservation')]
-    public function reservation(): Response
+    public function reservation(Request $request): Response
     {
+        $paymentMethod = $request->request->get('payment', 'card');
+
         return $this->render('reservation.html.twig', [
-            'controller_name' => 'HotelController',
+            'payment_method' => $paymentMethod
         ]);
     }
 }

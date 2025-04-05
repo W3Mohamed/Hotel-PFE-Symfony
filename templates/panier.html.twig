@@ -80,7 +80,7 @@
 
             <!-- Récapitulatif et Paiement -->
             <div class="bg-white p-6 rounded-lg shadow-lg">
-                <form action="/reservation">
+                <form action="{{ path('reservation') }}" method="POST">
                     <h2 class="text-3xl font-semibold mb-6 text-[var(--noir)]">Récapitulatif</h2>
                     {% if reservation_data %}
                         <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
@@ -146,13 +146,13 @@
                         <h3 class="text-xl font-semibold mb-4">Mode de paiement</h3>
                         <div class="space-y-2">
                             <label class="flex items-center gap-2">
-                                <input type="radio" name="payment" checked> Carte Bancaire
+                                <input type="radio" name="payment" value="card" checked> Carte Bancaire
                             </label>
                             <label class="flex items-center gap-2">
-                                <input type="radio" name="payment"> PayPal
+                                <input type="radio" name="payment" value="paypal"> PayPal
                             </label>
                             <label class="flex items-center gap-2">
-                                <input type="radio" name="payment"> Payer à l’arrivée
+                                <input type="radio" name="payment" value="arrival"> Payer à l’arrivée
                             </label>
                         </div>
                     </div>
