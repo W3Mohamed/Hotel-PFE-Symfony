@@ -25,7 +25,7 @@ class Panier
     /**
      * @var Collection<int, PanierChambres>
      */
-    #[ORM\OneToMany(targetEntity: PanierChambres::class, mappedBy: 'panier')]
+    #[ORM\OneToMany(targetEntity: PanierChambres::class, mappedBy: 'panier', cascade:["persist", "remove"])]
     private Collection $panierChambres;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]

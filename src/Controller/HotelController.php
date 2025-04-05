@@ -29,13 +29,34 @@ final class HotelController extends AbstractController
     public function chambres(Request $request,EntityManagerInterface $entityManager): Response
     {
         $session = $request->getSession();
-        $reservationData = $session->get('reservation_data');
+        $sessionId = $session->getId();
 
-        $chambres = $entityManager->getRepository(Chambres::class)->findAll();
-
-        if(!$reservationData){
-
+        if ($request->isMethod('GET') && $request->query->get('checkin') && $request->query->get('checkout')) {
+            
+            $dateArrive = new \DateTime($request->query->get('checkin'));
+            $dateDepart = new \DateTime($request->query->get('checkout'));
+            
+            if ($dateArrive >= $dateDepart) {
+                throw new \Exception("La date de départ doit être après la date d'arrivée");
+            }
+            // Vider le panier existant lorsque les dates changent
+            $panier = $entityManager->getRepository(Panier::class)->findOneBy(['session_id' => $sessionId]);
+            
+            if ($panier) {
+                // Suppression en cascade des PanierChambres et PanierServices
+                $entityManager->remove($panier);
+                $entityManager->flush();
+            }
+            // Mettre à jour les dates en session
+            $session->set('reservation_data', [
+                'dateArrive' => $dateArrive,
+                'dateDepart' => $dateDepart,
+                'nbAdulte' => (int)$request->query->get('adults'),
+                'nbEnfant' => (int)$request->query->get('children')
+            ]);
         }
+        $reservationData = $session->get('reservation_data');
+        $chambres = $entityManager->getRepository(Chambres::class)->findAll();
         
         return $this->render('chambres.html.twig', [
             'chambres' => $chambres,
@@ -47,6 +68,7 @@ final class HotelController extends AbstractController
     public function storeDates(Request $request, EntityManagerInterface $em): Response
     {
         $session = $request->getSession();
+        $sessionId = $session->getId();
         
         // Valider les dates
         $checkin = new \DateTime($request->query->get('checkin'));
@@ -55,6 +77,14 @@ final class HotelController extends AbstractController
         if ($checkin >= $checkout) {
             $this->addFlash('error', 'La date de départ doit être après la date d\'arrivée');
             return $this->redirectToRoute('accueil');
+        }
+
+        // Vider le panier existant (même logique que dans /chambres)
+        $panier = $em->getRepository(Panier::class)->findOneBy(['session_id' => $sessionId]);
+        
+        if ($panier) {
+            $em->remove($panier);
+            $em->flush();
         }
 
         // Stocker en session
@@ -82,20 +112,20 @@ final class HotelController extends AbstractController
         $session = $request->getSession();
         $reservationData = $session->get('reservation_data');
         
-        if(!$reservationData){
-            $defaultCheckin = new \DateTime('tomorrow');
-            $defaultCheckout = new \DateTime('tomorrow +1 day');
+        // if(!$reservationData){
+        //     $defaultCheckin = new \DateTime('tomorrow');
+        //     $defaultCheckout = new \DateTime('tomorrow +1 day');
             
-            $reservationData = [
-                'dateArrive' => $defaultCheckin,
-                'dateDepart' => $defaultCheckout,
-                'nbAdulte' => 1,
-                'nbEnfant' => 0
-            ];
+        //     $reservationData = [
+        //         'dateArrive' => $defaultCheckin,
+        //         'dateDepart' => $defaultCheckout,
+        //         'nbAdulte' => 1,
+        //         'nbEnfant' => 0
+        //     ];
             
-            // Optionnel : stocker en session pour consistance
-            $session->set('reservation_data', $reservationData);
-        }
+        //     // Optionnel : stocker en session pour consistance
+        //     $session->set('reservation_data', $reservationData);
+        // }
 
         $services = $entityManager->getRepository(Services::class)->findAll();
         return $this->render('detail.html.twig', [
@@ -110,6 +140,7 @@ final class HotelController extends AbstractController
     {
         $session = $request->getSession();
         $sessionId = $session->getId();
+        $reservationData = $session->get('reservation_data');
          // Pour vérifier que la session fonctionne, stockez quelque chose dedans
         if (!$session->has('test_value')) {
             $session->set('test_value', 'Session test à ' . time());
@@ -130,6 +161,7 @@ final class HotelController extends AbstractController
         if (!$panier) {
             return $this->render('panier.html.twig', [
                 'chambres' => [],
+                'reservation_data' => $reservationData
             ]);
         }
         $panierChambres = $panier->getPanierChambres();
@@ -137,6 +169,7 @@ final class HotelController extends AbstractController
         if ($panierChambres->isEmpty()) {
             return $this->render('panier.html.twig', [
                 'chambres' => [],
+                'reservation_data' => $reservationData
             ]);
         }
         $nbNuit = $panier->getDateArrive()->diff($panier->getDateDepart())->days;
@@ -165,6 +198,7 @@ final class HotelController extends AbstractController
             'prixChambre' => $prixChambre,
             'totalServices' => $totalServices,
             'total' => $total,
+            'reservation_data' => $reservationData
         ]);
 
     }

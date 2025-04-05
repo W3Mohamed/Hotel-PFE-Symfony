@@ -6,7 +6,7 @@
         <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
         <!-- Font Awesome pour les icônes -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <link rel="icon" type="image/x-icon" href="img/logo_2.png">
+        <link rel="icon" type="image/x-icon" href="{{ asset('img/logo_2.png') }}">
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +14,7 @@
     
         <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
-        <script src="js/script.js"></script>
+        <script src="{{ asset('js/script.js') }}"></script>
 
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     </head>
@@ -38,7 +38,7 @@
 
                     <!-- Menu pour mobile -->
                     <div class="lg:hidden w-8 cursor-pointer navBtn">
-                        <img src="icon/menu.png" alt="Menu" class="w-full hover:rotate-90 transition-transform duration-300">
+                        <img src="{{ asset('icon/menu.png') }}" alt="Menu" class="w-full hover:rotate-90 transition-transform duration-300">
                     </div>
 
                     <!-- Liens de navigation -->
@@ -82,7 +82,7 @@
                     </ul>
 
                     <!-- Bouton de réservation -->
-                    <a href="/panier" class="hidden lg:block bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black hover:scale-105 transition duration-300">
+                    <a href="/panier" class="hidden lg:block bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-[#c9a235] hover:scale-105 transition duration-300">
                         Panier
                     </a>
                 </div>
@@ -120,7 +120,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/panier" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-black transition duration-300 text-center">
+                        <a href="/panier" class="bg-[var(--beige)] text-white py-2 px-6 rounded-sm font-semibold hover:bg-[#c9a235] transition duration-300 text-center">
                             Panier
                         </a>
                     </li>

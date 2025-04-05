@@ -60,7 +60,7 @@ final class CartController extends AbstractController
             'chambre' => $chambre
         ]);
         if ($panierChambreExistant) {
-            $this->addFlash('error', 'Cette chambre est déjà dans votre panier.');
+            $this->addFlash('chambre_existe', 'Cette chambre est déjà dans votre panier.');
             return $this->redirectToRoute('detail', ['id' => $chambreId]); // Redirection vers la page détail
         }
 

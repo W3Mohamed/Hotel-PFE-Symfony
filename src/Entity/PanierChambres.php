@@ -24,7 +24,7 @@ class PanierChambres
     /**
      * @var Collection<int, PanierService>
      */
-    #[ORM\OneToMany(targetEntity: PanierService::class, mappedBy: 'panierChambre')]
+    #[ORM\OneToMany(targetEntity: PanierService::class, mappedBy: 'panierChambre', cascade: ['persist', 'remove'])]
     private Collection $panierServices;
 
     public function __construct()
