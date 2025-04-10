@@ -43,18 +43,6 @@ class Chambres
     #[ORM\OneToMany(targetEntity: PanierChambres::class, mappedBy: 'chambre')]
     private Collection $panierChambres;
 
-    /**
-     * @var Collection<int, ReservationChambre>
-     */
-    #[ORM\OneToMany(targetEntity: ReservationChambre::class, mappedBy: 'chambre_id')]
-    private Collection $reservation_chambre;
-
-    public function __construct()
-    {
-        $this->panierChambres = new ArrayCollection();
-        $this->reservation_chambre = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -168,36 +156,6 @@ class Chambres
             // set the owning side to null (unless already changed)
             if ($panierChambre->getChambre() === $this) {
                 $panierChambre->setChambre(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, ReservationChambre>
-     */
-    public function getReservationChambre(): Collection
-    {
-        return $this->reservation_chambre;
-    }
-
-    public function addReservationChambre(ReservationChambre $reservationChambre): static
-    {
-        if (!$this->reservation_chambre->contains($reservationChambre)) {
-            $this->reservation_chambre->add($reservationChambre);
-            $reservationChambre->setChambreId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReservationChambre(ReservationChambre $reservationChambre): static
-    {
-        if ($this->reservation_chambre->removeElement($reservationChambre)) {
-            // set the owning side to null (unless already changed)
-            if ($reservationChambre->getChambreId() === $this) {
-                $reservationChambre->setChambreId(null);
             }
         }
 

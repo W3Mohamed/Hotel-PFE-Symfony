@@ -115,29 +115,29 @@
                 <!-- Accordéon pour les informations de paiement -->
                 {% if payment_method == 'card' %}
                     <div class="my-6">
-    <button id="accordion-button" class="w-full bg-[var(--beige)] text-white py-3 rounded-lg hover:bg-black transition duration-300 flex items-center justify-between px-4">
-        <span class="font-semibold">Informations de Paiement</span>
-        <i class="fas fa-chevron-down transition-transform duration-300"></i>
-    </button>
-    <div id="accordion-content" class="accordion-content bg-gray-50 p-6 rounded-lg mt-2 shadow-inner">
-        <div class="space-y-4">
-            <div>
-                <label for="cardNumber" class="block text-sm font-medium text-gray-700">Numéro de carte</label>
-                <input type="text" id="cardNumber" name="cardNumber" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent" required>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="expiryDate" class="block text-sm font-medium text-gray-700">Date d'expiration</label>
-                    <input type="text" id="expiryDate" name="expiryDate" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent" required>
-                </div>
-                <div>
-                    <label for="cvv" class="block text-sm font-medium text-gray-700">CVV</label>
-                    <input type="text" id="cvv" name="cvv" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent" required>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                        <button id="accordion-button" class="w-full bg-[var(--beige)] text-white py-3 rounded-lg hover:bg-black transition duration-300 flex items-center justify-between px-4">
+                            <span class="font-semibold">Informations de Paiement</span>
+                            <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                        </button>
+                        <div id="accordion-content" class="accordion-content bg-gray-50 p-6 rounded-lg mt-2 shadow-inner">
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="cardNumber" class="block text-sm font-medium text-gray-700">Numéro de carte</label>
+                                    <input type="text" id="cardNumber" name="cardNumber" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent" required>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="expiryDate" class="block text-sm font-medium text-gray-700">Date d'expiration</label>
+                                        <input type="text" id="expiryDate" name="expiryDate" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent" required>
+                                    </div>
+                                    <div>
+                                        <label for="cvv" class="block text-sm font-medium text-gray-700">CVV</label>
+                                        <input type="text" id="cvv" name="cvv" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% elseif payment_method == 'paypal' %}
                     <div class="my-6 p-6 bg-gray-50 rounded-lg">
                         <p class="text-center mb-4">Vous serez redirigé vers PayPal pour finaliser votre paiement</p>

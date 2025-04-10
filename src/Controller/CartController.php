@@ -51,6 +51,7 @@ final class CartController extends AbstractController
             $panier->setNbAdulte($nbAdulte);
             $panier->setNbEnfant($nbEnfant);
             $panier->setDateCreation(new \DateTime());
+            $panier->setStatus(false);
             $em->persist($panier);
             $em->flush();
         }

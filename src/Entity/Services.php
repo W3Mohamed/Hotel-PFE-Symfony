@@ -30,20 +30,8 @@ class Services
     #[ORM\OneToMany(targetEntity: PanierService::class, mappedBy: 'service_id')]
     private Collection $panierServices;
 
-    /**
-     * @var Collection<int, ReservationsService>
-     */
-    #[ORM\OneToMany(targetEntity: ReservationsService::class, mappedBy: 'service_id')]
-    private Collection $reservationsServices;
-
     #[ORM\Column(length: 255)]
     private ?string $image = null;
-
-    public function __construct()
-    {
-        $this->panierServices = new ArrayCollection();
-        $this->reservationsServices = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -110,36 +98,6 @@ class Services
             // set the owning side to null (unless already changed)
             if ($panierService->getServiceId() === $this) {
                 $panierService->setServiceId(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, ReservationsService>
-     */
-    public function getReservationsServices(): Collection
-    {
-        return $this->reservationsServices;
-    }
-
-    public function addReservationsService(ReservationsService $reservationsService): static
-    {
-        if (!$this->reservationsServices->contains($reservationsService)) {
-            $this->reservationsServices->add($reservationsService);
-            $reservationsService->setServiceId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReservationsService(ReservationsService $reservationsService): static
-    {
-        if ($this->reservationsServices->removeElement($reservationsService)) {
-            // set the owning side to null (unless already changed)
-            if ($reservationsService->getServiceId() === $this) {
-                $reservationsService->setServiceId(null);
             }
         }
 

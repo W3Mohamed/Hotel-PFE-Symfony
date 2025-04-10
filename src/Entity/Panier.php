@@ -40,6 +40,9 @@ class Panier
     #[ORM\Column]
     private ?int $nbEnfant = null;
 
+    #[ORM\Column]
+    private ?bool $status = null;
+
     public function __construct()
     {
         $this->panierChambres = new ArrayCollection();
@@ -148,6 +151,18 @@ class Panier
     public function setNbEnfant(int $nbEnfant): static
     {
         $this->nbEnfant = $nbEnfant;
+
+        return $this;
+    }
+
+    public function isStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(bool $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

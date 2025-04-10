@@ -37,6 +37,9 @@ class User
     #[ORM\Column(length: 100)]
     private ?string $pays = null;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Reservations $reservations = null;
+
 
     public function getId(): ?int
     {
@@ -135,6 +138,23 @@ class User
     public function setPays(string $pays): static
     {
         $this->pays = $pays;
+
+        return $this;
+    }
+
+    public function getReservations(): ?Reservations
+    {
+        return $this->reservations;
+    }
+
+    public function setReservations(Reservations $reservations): static
+    {
+        // set the owning side of the relation if necessary
+        if ($reservations->getUser() !== $this) {
+            $reservations->setUser($this);
+        }
+
+        $this->reservations = $reservations;
 
         return $this;
     }
