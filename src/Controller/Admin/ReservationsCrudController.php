@@ -5,9 +5,11 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Reservations;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\{
     IdField,
     TextField,
@@ -39,9 +41,12 @@ class ReservationsCrudController extends AbstractCrudController
     {
         return $actions
             // Désactive toutes les actions sauf "voir"
-            ->disable('new', 'edit', 'delete')
+            ->disable('new')
             // Personnalise l'action "voir"
-            ->add('index', 'detail');
+            ->add('index', 'detail')
+            ->update('index', 'edit', function (Action $action) {
+                return $action->setIcon('fa fa-edit')->setLabel('Modifier statut');
+            });
     }
 
     public function configureFields(string $pageName): iterable
@@ -55,7 +60,19 @@ class ReservationsCrudController extends AbstractCrudController
                 })
                 ->onlyOnIndex(),
             
-            TextField::new('status', 'Statut'),
+            ChoiceField::new('status', 'Statut')
+                ->setChoices([
+                    'En cours' => 'En cours',
+                    'Confirmée' => 'Confirmée',
+                    'Annulée' => 'Annulée'
+                ])
+                ->renderExpanded() // Optionnel : affiche en radio buttons
+                ->renderAsBadges([
+                    'En cours' => 'warning',
+                    'Confirmée' => 'success',
+                    'Annulée' => 'danger'
+                ]),
+
             MoneyField::new('prix_total', 'Prix total')
                 ->setCurrency('EUR')
                 ->setStoredAsCents(false),
