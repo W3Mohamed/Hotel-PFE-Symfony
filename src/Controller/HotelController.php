@@ -192,7 +192,7 @@ final class HotelController extends AbstractController
                 }
                 $panierChambre->totalServices = $totalServices;
                 $panierChambre->total = $total;
-        
+
                 return $this->render('panier.html.twig', [
                     'chambres' => $panierChambres, // Liste des chambres ajoutées
                     'nbNuit' => $nbNuit,
@@ -225,17 +225,18 @@ final class HotelController extends AbstractController
     #[Route('/reservation', name: 'reservation')]
     public function reservation(Request $request): Response
     {
-        
+        $total = (float) $request->request->get('total');
         $paymentMethod = $request->request->get('payment', 'card');
-
         return $this->render('reservation.html.twig', [
-            'payment_method' => $paymentMethod
+            'payment_method' => $paymentMethod,
+            'total' => $total
         ]);
     }
 
     #[Route('/reservation/confirmer', name: 'ajout_reservation', methods:['POST'])]
     public function ajout_reservation(Request $request, EntityManagerInterface $em, SessionInterface $session): Response
     {
+            //dd($request->request->get('total'));
              // 1. Créer un nouvel utilisateur avec les données du formulaire
             $user = new User();
             $user->setNom($request->request->get('nom'));
@@ -265,7 +266,7 @@ final class HotelController extends AbstractController
             // 4. Créer une nouvelle réservation
             $reservation = new Reservations();
             $reservation->setStatus('En cours'); // ou autre statut initial
-            $reservation->setPrixTotal(0); 
+            $reservation->setPrixTotal((float) $request->request->get('total')); 
             $reservation->setDateCreation(new \DateTimeImmutable());
             $reservation->setCommentaire($request->request->get('commentaires'));
             $reservation->setUser($user);

@@ -34,6 +34,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Tableau de Bord', 'fa fa-home');
         yield MenuItem::linkToCrud('Chambres', 'fas fa-bed', Chambres::class);
         yield MenuItem::linkToCrud('Services', 'fas fa-concierge-bell', Services::class);
-        yield MenuItem::linkToCrud('Reservations', 'fas fa-concierge-bell', Reservations::class);
+        yield MenuItem::linkToCrud('Reservations', 'fas fa-receipt', Reservations::class);
     }
 }
