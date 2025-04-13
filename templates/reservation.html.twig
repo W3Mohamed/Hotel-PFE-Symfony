@@ -47,12 +47,11 @@
             <p class="text-lg">Remplissez vos informations pour finaliser votre réservation.</p>
         </div>
     </section>
-
     <!--=========================Formulaire de Réservation====================-->
     <section class="container mx-auto my-12 p-6">
         <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg hover-effect">
             <h2 class="text-3xl font-semibold mb-6 text-[var(--noir)]">Informations Personnelles</h2>
-            <form class="space-y-6">
+            <form method="POST" action="{{ path('ajout_reservation') }}" class="space-y-6">
                 <!-- Nom et Prénom -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -115,24 +114,25 @@
                 <!-- Accordéon pour les informations de paiement -->
                 {% if payment_method == 'card' %}
                     <div class="my-6">
-                        <button id="accordion-button" class="w-full bg-[var(--beige)] text-white py-3 rounded-lg hover:bg-black transition duration-300 flex items-center justify-between px-4">
+                        <!-- Remplacez le bouton d'accordéon par un div (pas un button) -->
+                        <div id="accordion-trigger" class="w-full bg-[var(--beige)] text-white py-3 rounded-lg hover:bg-black transition duration-300 flex items-center justify-between px-4 cursor-pointer">
                             <span class="font-semibold">Informations de Paiement</span>
                             <i class="fas fa-chevron-down transition-transform duration-300"></i>
-                        </button>
+                        </div>
                         <div id="accordion-content" class="accordion-content bg-gray-50 p-6 rounded-lg mt-2 shadow-inner">
                             <div class="space-y-4">
                                 <div>
                                     <label for="cardNumber" class="block text-sm font-medium text-gray-700">Numéro de carte</label>
-                                    <input type="text" id="cardNumber" name="cardNumber" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent" required>
+                                    <input type="text" id="cardNumber" name="cardNumber" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent">
                                 </div>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label for="expiryDate" class="block text-sm font-medium text-gray-700">Date d'expiration</label>
-                                        <input type="text" id="expiryDate" name="expiryDate" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent" required>
+                                        <input type="text" id="expiryDate" name="expiryDate" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent">
                                     </div>
                                     <div>
                                         <label for="cvv" class="block text-sm font-medium text-gray-700">CVV</label>
-                                        <input type="text" id="cvv" name="cvv" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent" required>
+                                        <input type="text" id="cvv" name="cvv" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-[var(--beige)] focus:border-transparent">
                                     </div>
                                 </div>
                             </div>
@@ -149,7 +149,8 @@
                     <div class="my-6 p-6 bg-gray-50 rounded-lg">
                         <p class="text-center">Vous paierez directement à l'établissement lors de votre arrivée</p>
                     </div>
-                    {% endif %}
+                {% endif %}
+                
                 <!-- Bouton de soumission -->
                 <button type="submit" class="w-full bg-[var(--beige)] text-white py-2 rounded hover:bg-black transition duration-300">
                     Confirmer la Réservation
@@ -160,14 +161,41 @@
 
     <!-- Script pour l'accordéon -->
     <script>
-        const accordionButton = document.getElementById('accordion-button');
+        const accordionTrigger = document.getElementById('accordion-trigger'); // Changé l'ID
         const accordionContent = document.getElementById('accordion-content');
 
-        accordionButton.addEventListener('click', (event) => {
-            event.preventDefault(); // Empêche le comportement par défaut du bouton
+        accordionTrigger.addEventListener('click', () => {
             accordionContent.classList.toggle('open');
-            accordionButton.querySelector('i').classList.toggle('fa-chevron-up');
-            accordionButton.querySelector('i').classList.toggle('fa-chevron-down');
+            const icon = accordionTrigger.querySelector('i');
+            icon.classList.toggle('fa-chevron-up');
+            icon.classList.toggle('fa-chevron-down');
+        });
+
+        // Ajoutez ceci pour debug
+        document.querySelector('form').addEventListener('submit', function(e) {
+            // Validation des champs
+            let isValid = true;
+            
+            this.querySelectorAll('[required]').forEach(field => {
+                field.style.borderColor = ''; // Réinitialise la couleur
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = 'red';
+                    // Ajoutez un message d'erreur visible pour l'utilisateur
+                    const errorMsg = document.createElement('p');
+                    errorMsg.textContent = 'Ce champ est obligatoire';
+                    errorMsg.style.color = 'red';
+                    errorMsg.style.fontSize = '0.8rem';
+                    field.after(errorMsg);
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                // Ajoutez une notification utilisateur visible
+                alert('Veuillez remplir tous les champs obligatoires');
+            }
+            // Si valide, le formulaire se soumet normalement
         });
     </script>
 </body>

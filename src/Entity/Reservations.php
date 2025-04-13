@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ReservationsRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReservationsRepository::class)]
@@ -29,6 +30,9 @@ class Reservations
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Panier $panier = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $commentaire = null;
 
     public function getId(): ?int
     {
@@ -91,6 +95,18 @@ class Reservations
     public function setPanier(Panier $panier): static
     {
         $this->panier = $panier;
+
+        return $this;
+    }
+
+    public function getCommentaire(): ?string
+    {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire(?string $commentaire): static
+    {
+        $this->commentaire = $commentaire;
 
         return $this;
     }

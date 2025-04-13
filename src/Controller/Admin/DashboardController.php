@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Chambres;
+use App\Entity\Reservations;
 use App\Entity\Services;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -33,5 +34,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Tableau de Bord', 'fa fa-home');
         yield MenuItem::linkToCrud('Chambres', 'fas fa-bed', Chambres::class);
         yield MenuItem::linkToCrud('Services', 'fas fa-concierge-bell', Services::class);
+        yield MenuItem::linkToCrud('Reservations', 'fas fa-concierge-bell', Reservations::class);
     }
 }

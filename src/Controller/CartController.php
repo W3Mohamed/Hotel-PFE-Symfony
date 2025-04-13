@@ -41,7 +41,7 @@ final class CartController extends AbstractController
         if (!$sessionId) {
             throw new \Exception("L'ID de session est introuvable.");
         }
-        $panier = $em->getRepository(Panier::class)->findOneBy(['session_id' => $sessionId]);
+        $panier = $em->getRepository(Panier::class)->findOneBy(['session_id' => $sessionId, 'status' => false]);
 
         if (!$panier) {
             $panier = new Panier();
