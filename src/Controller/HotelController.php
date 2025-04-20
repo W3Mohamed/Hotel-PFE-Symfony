@@ -7,6 +7,7 @@ use App\Entity\Panier;
 use App\Entity\Reservations;
 use App\Entity\Services;
 use App\Entity\User;
+use App\Repository\ChambresRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,11 +29,11 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/chambres', name: 'chambres')]
-    public function chambres(Request $request,EntityManagerInterface $entityManager): Response
+    public function chambres(Request $request,EntityManagerInterface $entityManager,ChambresRepository $chambresRepo): Response
     {
         $session = $request->getSession();
         $sessionId = $session->getId();
-
+        $reservationData = $session->get('reservation_data', []);
         if ($request->isMethod('GET') && $request->query->get('checkin') && $request->query->get('checkout')) {
             
             $dateArrive = new \DateTime($request->query->get('checkin'));
@@ -49,17 +50,25 @@ final class HotelController extends AbstractController
                 $entityManager->remove($panier);
                 $entityManager->flush();
             }
-            // Mettre à jour les dates en session
-            $session->set('reservation_data', [
+            
+            // Trouver les chambres indisponibles
+            $unavailableRoomIds = $chambresRepo->findUnavailableRoomsForDates($dateArrive, $dateDepart);
+
+            $reservationData = [
                 'dateArrive' => $dateArrive,
                 'dateDepart' => $dateDepart,
                 'nbAdulte' => (int)$request->query->get('adults'),
-                'nbEnfant' => (int)$request->query->get('children')
-            ]);
+                'nbEnfant' => (int)$request->query->get('children'),
+                'chambresIndisponibles' => $unavailableRoomIds
+            ];
+            // Ne pas toucher à chambresIndisponibles ici
+            $session->set('reservation_data', $reservationData);
         }
-        $reservationData = $session->get('reservation_data');
-        $chambres = $entityManager->getRepository(Chambres::class)->findAll();
-        
+
+        $chambres = empty($reservationData)
+         ? $chambresRepo->findAll()
+         : $chambresRepo->findAvailableRooms($reservationData['chambresIndisponibles'] ?? []);
+    
         return $this->render('chambres.html.twig', [
             'chambres' => $chambres,
             'reservation_data' => $reservationData
@@ -71,7 +80,7 @@ final class HotelController extends AbstractController
     {
         $session = $request->getSession();
         $sessionId = $session->getId();
-        
+
         // Valider les dates
         $checkin = new \DateTime($request->query->get('checkin'));
         $checkout = new \DateTime($request->query->get('checkout'));
@@ -80,6 +89,23 @@ final class HotelController extends AbstractController
             $this->addFlash('error', 'La date de départ doit être après la date d\'arrivée');
             return $this->redirectToRoute('accueil');
         }
+
+        // Vérifier la disponibilité des chambres
+        $chambresIndisponibles = $em->getRepository(Panier::class)
+            ->createQueryBuilder('p')
+            ->join('p.panierChambres', 'pc')
+            ->where('p.status = :status')
+            ->andWhere('p.dateArrive < :checkout')
+            ->andWhere('p.dateDepart > :checkin')
+            ->setParameter('status', true) // Seulement les réservations confirmées
+            ->setParameter('checkin', $checkin)
+            ->setParameter('checkout', $checkout)
+            ->select('IDENTITY(pc.chambre) as chambreId')
+            ->getQuery()
+            ->getResult();
+
+        // Convertir en tableau simple d'IDs
+        $chambresIndisponiblesIds = array_column($chambresIndisponibles, 'chambreId');
 
         // Vider le panier existant (même logique que dans /chambres)
         $panier = $em->getRepository(Panier::class)->findOneBy(['session_id' => $sessionId , 'status' => false]);
@@ -94,7 +120,8 @@ final class HotelController extends AbstractController
             'dateArrive' => $checkin,
             'dateDepart' => $checkout,
             'nbAdulte' => (int)$request->query->get('adults'),
-            'nbEnfant' => (int)$request->query->get('children')
+            'nbEnfant' => (int)$request->query->get('children'),
+            'chambresIndisponibles' => $chambresIndisponiblesIds // Stocker les IDs des chambres indisponibles
         ]);
 
         return $this->redirectToRoute('chambres');
@@ -109,31 +136,21 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/detail/{id}', methods:['GET'], name: 'detail')]
-    public function detail(Request $request, EntityManagerInterface $entityManager, Chambres $chambre): Response
+    public function detail(Request $request, EntityManagerInterface $entityManager, Chambres $chambre,ChambresRepository $chambresRepo): Response
     {
         $session = $request->getSession();
         $reservationData = $session->get('reservation_data');
-        
-        // if(!$reservationData){
-        //     $defaultCheckin = new \DateTime('tomorrow');
-        //     $defaultCheckout = new \DateTime('tomorrow +1 day');
-            
-        //     $reservationData = [
-        //         'dateArrive' => $defaultCheckin,
-        //         'dateDepart' => $defaultCheckout,
-        //         'nbAdulte' => 1,
-        //         'nbEnfant' => 0
-        //     ];
-            
-        //     // Optionnel : stocker en session pour consistance
-        //     $session->set('reservation_data', $reservationData);
-        // }
-
+        $isAvailable = true;
+        if ($reservationData) {
+            $unavailableRoomIds = $reservationData['chambresIndisponibles'] ?? [];
+            $isAvailable = !in_array($chambre->getId(), $unavailableRoomIds);
+        }
         $services = $entityManager->getRepository(Services::class)->findAll();
         return $this->render('detail.html.twig', [
             'chambre' => $chambre,
             'services' => $services,
-            'reservation_data' => $reservationData
+            'reservation_data' => $reservationData,
+            'is_available' => $isAvailable
         ]);
     }
 

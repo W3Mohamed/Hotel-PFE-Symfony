@@ -19,25 +19,34 @@ class ChambresRepository extends ServiceEntityRepository
 //    /**
 //     * @return Chambres[] Returns an array of Chambres objects
 //     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findAvailableRooms(?array $unavailableRoomIds = null)
+    {
+        $qb = $this->createQueryBuilder('c');
+        
+        if ($unavailableRoomIds) {
+            $qb->where('c.id NOT IN (:unavailableRoomIds)')
+               ->setParameter('unavailableRoomIds', $unavailableRoomIds);
+        }
+        
+        return $qb->getQuery()->getResult();
+    }
+    
+    public function findUnavailableRoomsForDates(\DateTimeInterface $dateArrive, \DateTimeInterface $dateDepart): array
+    {
+        $results = $this->createQueryBuilder('c')
+            ->select('DISTINCT c.id') // On veut seulement les IDs uniques
+            ->join('c.panierChambres', 'pc') // Jointure avec PanierChambres
+            ->join('pc.panier', 'p') // Jointure avec Panier
+            ->join('App\Entity\Reservations', 'r', 'WITH', 'r.panier = p.id') // Jointure avec Réservation
+            ->where('r.status = :status') // Uniquement les réservations confirmées
+            ->andWhere('p.dateArrive < :dateDepart AND p.dateDepart > :dateArrive') // Chevauchement de dates
+            ->setParameter('status', 'Confirmée')
+            ->setParameter('dateArrive', $dateArrive)
+            ->setParameter('dateDepart', $dateDepart)
+            ->getQuery()
+            ->getResult();
 
-//    public function findOneBySomeField($value): ?Chambres
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        // Retourne un tableau simple d'IDs [1, 5, 8] au lieu de [['id'=>1], ['id'=>5], ...]
+        return array_column($results, 'id');
+    }
 }
