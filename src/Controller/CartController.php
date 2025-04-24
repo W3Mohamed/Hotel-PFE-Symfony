@@ -78,7 +78,7 @@ final class CartController extends AbstractController
             if ($service) {
                 $panierService = new PanierService();
                 $panierService->setPanierChambre($panierChambre);
-                $panierService->setServiceId($service);
+                $panierService->setService($service);
                 $em->persist($panierService);
             }
         }

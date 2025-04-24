@@ -86,7 +86,7 @@ class Services
     {
         if (!$this->panierServices->contains($panierService)) {
             $this->panierServices->add($panierService);
-            $panierService->setServiceId($this);
+            $panierService->setService($this);
         }
 
         return $this;
@@ -96,8 +96,8 @@ class Services
     {
         if ($this->panierServices->removeElement($panierService)) {
             // set the owning side to null (unless already changed)
-            if ($panierService->getServiceId() === $this) {
-                $panierService->setServiceId(null);
+            if ($panierService->getService() === $this) {
+                $panierService->setService(null);
             }
         }
 

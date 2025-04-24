@@ -4,15 +4,24 @@ namespace App\Controller;
 
 use App\Entity\Chambres;
 use App\Entity\Panier;
+use App\Entity\PanierChambres;
+use App\Entity\PanierService;
 use App\Entity\Reservations;
 use App\Entity\Services;
 use App\Entity\User;
 use App\Repository\ChambresRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email as MimeEmail;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class HotelController extends AbstractController
@@ -251,9 +260,8 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/reservation/confirmer', name: 'ajout_reservation', methods:['POST'])]
-    public function ajout_reservation(Request $request, EntityManagerInterface $em, SessionInterface $session): Response
+    public function ajout_reservation(Request $request, EntityManagerInterface $em, SessionInterface $session,MailerInterface $mailer,LoggerInterface $logger): Response
     {
-            //dd($request->request->get('total'));
              // 1. Créer un nouvel utilisateur avec les données du formulaire
             $user = new User();
             $user->setNom($request->request->get('nom'));
@@ -297,8 +305,122 @@ final class HotelController extends AbstractController
             // 6. Exécuter toutes les opérations en base de données
             $em->flush();
             
+            // try {
+            //     $panierChambres = $em->getRepository(PanierChambres::class)->findBy(['panier' => $panier]);
+                
+            //     $panierServices = [];
+            //     foreach ($panierChambres as $panierChambre) {
+            //         foreach ($panierChambre->getPanierServices() as $service) {
+            //             $panierServices[] = $service;
+            //         }
+            //     }
+        
+            //     $htmlContent = $this->renderView('emails/reservation_confirmation.html.twig', [
+            //         'user' => $user,
+            //         'reservation' => $reservation,
+            //         'panier' => $panier,
+            //         'panierChambres' => $panierChambres,
+            //         'panierServices' => $panierServices
+            //     ]);
+
+            //     $dsn = 'smtp://mohamedbenachenhou430@gmail.com:fcunsvkgyjpcsqhz@smtp.gmail.com:587';
+            //     $transport = Transport::fromDsn($dsn);
+            //     // 2. Créer manuellement l'objet Mailer
+            //     $mailer = new Mailer($transport);
+            //     $email = (new Email())
+            //         ->from('mohamedbenachenhou430@gmail.com')
+            //         ->to($user->getEmail())
+            //         ->subject('Confirmation de réservation #'.$reservation->getId())
+            //         ->html($htmlContent);
+            //         // ->text('Ceci est un test simple sans template Twig');
+        
+            //     $mailer->send($email);
+        
+            // } catch (\Throwable $e) {
+            //     $logger->error('Erreur envoi email', [
+            //         'error' => $e->getMessage(),
+            //         'trace' => $e->getTraceAsString(),
+            //         'reservation_id' => $reservation->getId()
+            //     ]);
+            //     // Vous pourriez aussi ajouter un message flash pour informer l'utilisateur
+            //     $this->addFlash('warning', 'Votre réservation a été enregistrée mais l\'email de confirmation n\'a pas pu être envoyé.');
+            // }
+
+            try {
+                // Créer manuellement le transport SMTP comme dans votre test
+                $dsn = 'smtp://mohamedbenachenhou430@gmail.com:fcunsvkgyjpcsqhz@smtp.gmail.com:587';
+                $transport = Transport::fromDsn($dsn);
+                
+                // Créer manuellement l'objet Mailer
+                $mailer = new Mailer($transport);
+                
+                $panierChambres = $em->getRepository(PanierChambres::class)->findBy(['panier' => $panier]);
+                
+                $panierServices = [];
+                foreach ($panierChambres as $panierChambre) {
+                    foreach ($panierChambre->getPanierServices() as $service) {
+                        $panierServices[] = $service;
+                    }
+                }
+        
+                $htmlContent = $this->renderView('emails/reservation_confirmation.html.twig', [
+                    'user' => $user,
+                    'reservation' => $reservation,
+                    'panier' => $panier,
+                    'panierChambres' => $panierChambres,
+                    'panierServices' => $panierServices
+                ]);
+
+                $email = (new Email())
+                    ->from(new Address('mohamedbenachenhou430@gmail.com', 'Hôtel Roxal'))
+                    ->to(new Address($user->getEmail(), $user->getPrenom().' '.$user->getNom()))
+                    ->subject('Confirmation de réservation #'.$reservation->getId())
+                    ->html($htmlContent);
+        
+                $mailer->send($email);
+                $this->addFlash('success', 'Votre réservation a été enregistrée et un email de confirmation a été envoyé.');
+        
+            } catch (\Throwable $e) {
+                $logger->error('Erreur envoi email', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                    'reservation_id' => $reservation->getId()
+                ]);
+                $this->addFlash('warning', 'Votre réservation a été enregistrée mais l\'email de confirmation n\'a pas pu être envoyé.');
+            }
+
             // Rediriger vers une page de confirmation ou autre
             return $this->redirectToRoute('panier');
+
+    }
+
+    #[Route('/test-mail', name: 'test_mail')]
+    public function testMail(MailerInterface $mailer): Response
+    {
+        try {
+            // 1. Créer manuellement le transport SMTP
+            $dsn = 'smtp://mohamedbenachenhou430@gmail.com:fcunsvkgyjpcsqhz@smtp.gmail.com:587';
+
+            $transport = Transport::fromDsn($dsn);
+    
+            // 2. Créer manuellement l'objet Mailer
+            $mailer = new Mailer($transport);
+    
+            // 3. Créer le mail
+            $email = (new Email())
+                ->from('mohamedbenachenhou430@gmail.com')
+                ->to('medmohdz181@gmail.com')
+                ->subject('Test envoi manuel SMTP')
+                ->text('Ceci est un test envoyé sans injection de dépendance.');
+    
+            // 4. Envoyer le mail
+            $mailer->send($email);
+    
+            return new Response('Mail envoyé manuellement avec succès ✅');
+        } catch (\Throwable $th) {
+            return new Response('Erreur : ' . $th->getMessage());
+        }
+
 
     }
 }

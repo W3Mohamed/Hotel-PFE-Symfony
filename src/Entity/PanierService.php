@@ -17,7 +17,7 @@ class PanierService
     private ?PanierChambres $panierChambre = null;
 
     #[ORM\ManyToOne(inversedBy: 'panierServices')]
-    private ?Services $service_id = null;
+    private ?Services $service = null;
 
     public function getId(): ?int
     {
@@ -36,14 +36,14 @@ class PanierService
         return $this;
     }
 
-    public function getServiceId(): ?Services
+    public function getService(): ?Services
     {
-        return $this->service_id;
+        return $this->service;
     }
 
-    public function setServiceId(?Services $service_id): static
+    public function setService(?Services $service): static
     {
-        $this->service_id = $service_id;
+        $this->service = $service;
 
         return $this;
     }

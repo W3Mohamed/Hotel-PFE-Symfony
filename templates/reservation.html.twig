@@ -158,7 +158,96 @@
             </form>
         </div>
     </section>
-
+    <!--=========================Politique de Réservation====================-->
+    <section class="container mx-auto my-12 p-6">
+        <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-semibold mb-6 text-[var(--noir)] border-b pb-2">Politique de Réservation</h2>
+            
+            <div class="space-y-4">
+                <!-- Paiement -->
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 mt-1">
+                        <svg class="h-5 w-5 text-[var(--beige)]" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-lg font-medium text-gray-900">Conditions de Paiement</h3>
+                        <p class="mt-1 text-gray-600">
+                            Le paiement intégral est requis pour confirmer votre réservation. Nous acceptons les cartes bancaires (Visa, Mastercard) et PayPal.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Annulation -->
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 mt-1">
+                        <svg class="h-5 w-5 text-[var(--beige)]" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-lg font-medium text-gray-900">Politique d'Annulation</h3>
+                        <p class="mt-1 text-gray-600">
+                            Annulation gratuite jusqu'à 3 jours avant la date d'arrivée. 
+                            En cas d'annulation tardive ou de non-présentation, le montant total de la réservation sera retenu.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Arrivée -->
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 mt-1">
+                        <svg class="h-5 w-5 text-[var(--beige)]" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-lg font-medium text-gray-900">Heures d'Arrivée et Départ</h3>
+                        <p class="mt-1 text-gray-600">
+                            Arrivée à partir de 15h - Départ avant 11h. 
+                            Merci de nous contacter pour toute demande d'arrivée tardive ou de départ anticipé.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Enfants/Animaux -->
+                {# <div class="flex items-start">
+                    <div class="flex-shrink-0 mt-1">
+                        <svg class="h-5 w-5 text-[var(--beige)]" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-lg font-medium text-gray-900">Enfants & Animaux</h3>
+                        <p class="mt-1 text-gray-600">
+                            Les enfants sont les bienvenus. Supplément pour lit bébé: 15€/nuit. 
+                            Animaux acceptés sur demande (supplément de 20€/nuit, maximum 1 animal par chambre).
+                        </p>
+                    </div>
+                </div> #}
+            </div>
+            
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-blue-700">
+                            En complétant cette réservation, vous acceptez nos 
+                            <a href="#" class="font-medium text-blue-700 underline">Conditions Générales de Vente</a> 
+                            et notre 
+                            <a href="#" class="font-medium text-blue-700 underline">Politique de Confidentialité</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
     <!-- Script pour l'accordéon -->
     <script>
         const accordionTrigger = document.getElementById('accordion-trigger'); // Changé l'ID

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .header { background-color: #e5bd43; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .footer { background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Hôtel Roxal - Confirmation de réservation</h1>
+    </div>
+
+    <div class="content">
+        <p>Bonjour {{ user.prenom }},</p>
+        <p>Votre réservation a bien été enregistrée sous le numéro <strong>#{{ reservation.id }}</strong>.</p>
+
+        <h2>Détails de votre séjour</h2>
+        <table>
+            <tr>
+                <th>Date d'arrivée</th>
+                <th>Date de départ</th>
+                <th>Nombre de nuits</th>
+                <th>Montant total</th>
+            </tr>
+            <tr>
+                <td>{{ panier.dateArrive|date('d/m/Y') }}</td>
+                <td>{{ panier.dateDepart|date('d/m/Y') }}</td>
+                <td>{{ panier.dateArrive.diff(panier.dateDepart).days }}</td>
+                <td>{{ reservation.prixTotal}} €</td>
+            </tr>
+        </table>
+
+        <h3>Chambres réservées</h3>
+        <table>
+            <tr>
+                <th>Type</th>
+                <th>Prix/nuit</th>
+                <th>Nombre de nuits</th>
+                <th>Sous-total</th>
+            </tr>
+            {% for item in panierChambres %}
+            <tr>
+                <td>{{ item.chambre.libelle }}</td>
+                <td>{{ item.chambre.prix}} €</td>
+                <td>{{ panier.dateArrive.diff(panier.dateDepart).days }}</td>
+                <td>{{ (item.chambre.prix * panier.dateArrive.diff(panier.dateDepart).days)}} €</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        {% if panierServices|length > 0 %}
+        <h3>Services supplémentaires</h3>
+        <table>
+            <tr>
+                <th>Service</th>
+                <th>Prix/jour</th>
+                <th>Nombre de jours</th>
+                <th>Sous-total</th>
+            </tr>
+            {% for service in panierServices %}
+            <tr>
+                <td>{{ service.service.libelle }}</td>
+                <td>{{ service.service.prix}} €</td>
+                <td>{{ panier.dateArrive.diff(panier.dateDepart).days }}</td>
+                <td>{{ (service.service.prix * panier.dateArrive.diff(panier.dateDepart).days)}} €</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+        <h2>Politique de l'hôtel</h2>
+        <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #e5bd43; margin-bottom: 20px;">
+            <h3 style="margin-top: 0;">Conditions de paiement</h3>
+            <p>Le paiement intégral est requis pour confirmer votre réservation.</p>
+            
+            <h3>Politique d'annulation</h3>
+            <p>Annulation gratuite jusqu'à 3 jours avant la date d'arrivée. Passé ce délai, des frais équivalents à une nuitée seront retenus.</p>
+            
+            <h3>Heures d'arrivée/départ</h3>
+            <p>Arrivée à partir de 15h - Départ avant 11h.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Hôtel Roxal - 123 Avenue des Champs, Paris</p>
+        <p>Tél: +33 1 23 45 67 89 - Email: contact@hotelroxal.com</p>
+        <p>© {{ "now"|date("Y") }} Tous droits réservés</p>
+    </div>
+</body>
+</html>
