@@ -43,6 +43,9 @@ class Chambres
     #[ORM\OneToMany(targetEntity: PanierChambres::class, mappedBy: 'chambre')]
     private Collection $panierChambres;
 
+    #[ORM\Column]
+    private ?int $nombre = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -158,6 +161,18 @@ class Chambres
                 $panierChambre->setChambre(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNombre(): ?int
+    {
+        return $this->nombre;
+    }
+
+    public function setNombre(int $nombre): static
+    {
+        $this->nombre = $nombre;
 
         return $this;
     }

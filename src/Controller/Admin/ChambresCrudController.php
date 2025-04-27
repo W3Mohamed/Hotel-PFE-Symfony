@@ -29,6 +29,7 @@ class ChambresCrudController extends AbstractCrudController
             TextareaField::new('description', 'Description complète'),
             NumberField::new('prix', 'Prix par nuit'),
             NumberField::new('capacite', 'Capacité (nb personnes)'),
+            NumberField::new('nombre', 'Nombre de chambres'),
             ChoiceField::new('status', 'Statut')
                 ->setChoices([
                     'Disponible' => StatusEnum::DISPONIBLE,
@@ -36,7 +37,9 @@ class ChambresCrudController extends AbstractCrudController
                 ]),
             ImageField::new('image', 'Image de la chambre')
                 ->setUploadDir('public/img/chambres')
-                ->setBasePath('/img/chambres'),
+                ->setBasePath('/img/chambres')
+                ->setRequired(false) // Rend le champ non obligatoire
+                ->setFormTypeOption('allow_delete', false), 
         ];
     }
     

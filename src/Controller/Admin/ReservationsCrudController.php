@@ -120,8 +120,8 @@ class ReservationsCrudController extends AbstractCrudController
                         $services = [];
                         
                         foreach ($panierChambre->getPanierServices() as $panierService) {
-                            $services[] = $panierService->getServiceId()->getLibelle()
-                                . ' (' . $panierService->getServiceId()->getPrix() . '€)';
+                            $services[] = $panierService->getService()->getLibelle()
+                                . ' (' . $panierService->getService()->getPrix() . '€)';
                         }
                         
                         $details[] = sprintf(
