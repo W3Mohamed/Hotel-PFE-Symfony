@@ -207,7 +207,7 @@ final class HotelController extends AbstractController
                     $prixChambre = $panierChambre->getChambre()->getPrix() * $nbNuit;
                     $totalServicesChambre = 0;
                     foreach ($panierChambre->getPanierServices() as $panierService) {
-                        $totalServicesChambre += $panierService->getServiceId()->getPrix() * $nbNuit;
+                        $totalServicesChambre += $panierService->getService()->getPrix() * $nbNuit;
                     }
                     $prixTotalChambre = $prixChambre + $totalServicesChambre; 
                     $totalServices += $totalServicesChambre;
@@ -290,7 +290,7 @@ final class HotelController extends AbstractController
 
             // 4. Créer une nouvelle réservation
             $reservation = new Reservations();
-            $reservation->setStatus('En cours'); // ou autre statut initial
+            $reservation->setStatus('Confirmée'); // ou autre statut initial
             $reservation->setPrixTotal((float) $request->request->get('total')); 
             $reservation->setDateCreation(new \DateTimeImmutable());
             $reservation->setCommentaire($request->request->get('commentaires'));
@@ -304,47 +304,6 @@ final class HotelController extends AbstractController
             
             // 6. Exécuter toutes les opérations en base de données
             $em->flush();
-            
-            // try {
-            //     $panierChambres = $em->getRepository(PanierChambres::class)->findBy(['panier' => $panier]);
-                
-            //     $panierServices = [];
-            //     foreach ($panierChambres as $panierChambre) {
-            //         foreach ($panierChambre->getPanierServices() as $service) {
-            //             $panierServices[] = $service;
-            //         }
-            //     }
-        
-            //     $htmlContent = $this->renderView('emails/reservation_confirmation.html.twig', [
-            //         'user' => $user,
-            //         'reservation' => $reservation,
-            //         'panier' => $panier,
-            //         'panierChambres' => $panierChambres,
-            //         'panierServices' => $panierServices
-            //     ]);
-
-            //     $dsn = 'smtp://mohamedbenachenhou430@gmail.com:fcunsvkgyjpcsqhz@smtp.gmail.com:587';
-            //     $transport = Transport::fromDsn($dsn);
-            //     // 2. Créer manuellement l'objet Mailer
-            //     $mailer = new Mailer($transport);
-            //     $email = (new Email())
-            //         ->from('mohamedbenachenhou430@gmail.com')
-            //         ->to($user->getEmail())
-            //         ->subject('Confirmation de réservation #'.$reservation->getId())
-            //         ->html($htmlContent);
-            //         // ->text('Ceci est un test simple sans template Twig');
-        
-            //     $mailer->send($email);
-        
-            // } catch (\Throwable $e) {
-            //     $logger->error('Erreur envoi email', [
-            //         'error' => $e->getMessage(),
-            //         'trace' => $e->getTraceAsString(),
-            //         'reservation_id' => $reservation->getId()
-            //     ]);
-            //     // Vous pourriez aussi ajouter un message flash pour informer l'utilisateur
-            //     $this->addFlash('warning', 'Votre réservation a été enregistrée mais l\'email de confirmation n\'a pas pu être envoyé.');
-            // }
 
             try {
                 // Créer manuellement le transport SMTP comme dans votre test

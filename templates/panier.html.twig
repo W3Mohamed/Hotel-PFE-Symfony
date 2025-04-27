@@ -74,7 +74,7 @@
                                     {% if panierChambre.panierServices is not empty %}
                                     <ul class="text-sm text-gray-500 mt-2">
                                         {% for panierService in panierChambre.panierServices %}
-                                            <li>{{ panierService.serviceId.libelle }} - {{ panierService.serviceId.prix }}€</li>
+                                            <li>{{ panierService.service.libelle }} - {{ panierService.service.prix }}€</li>
                                         {% endfor %}
                                     </ul>
                                     {% else %}
