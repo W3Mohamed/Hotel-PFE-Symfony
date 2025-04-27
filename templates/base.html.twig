@@ -26,6 +26,19 @@
                 --beige: #e5bd43;
                 --second: #fafafa;
             }
+            @keyframes tapping {
+                0%, 100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-5px);
+                    }
+            }
+
+            .tapping-animation {
+                animation: tapping 1s infinite;
+            }
+
         </style>
         {% block header %}
             <!--=========================Navbar====================-->
@@ -126,9 +139,85 @@
                     </li>
                 </ul>
             </nav>
+            <div class="fixed bottom-5 right-5 z-950">
+                <!-- Bouton du chatbot -->
+                <div
+                    class="w-16 h-16 bg-[var(--beige)] rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:scale-110 transition-transform duration-300"
+                    onclick="toggleChatbot()"
+                    id="chatbot-toggle-button"
+                >
+                    <i class="fas fa-comment-alt text-white text-2xl" id="chatbot-toggle-icon"></i>
+                </div>
+
+                <!-- Fenêtre du chatbot -->
+                <div class="w-80 h-[400px] bg-[var(--blanc)] rounded-lg shadow-lg hidden flex-col mt-4" id="chatbot-window">
+                    <!-- En-tête du chatbot -->
+                    <div class="bg-[var(--beige)] text-[var(--blanc)] p-3 flex items-center justify-between rounded-t-lg">
+                        <div class="font-bold">Chat en direct</div>
+                        <button onclick="toggleChatbot()" id="close-chatbot-btn" class="text-[var(--blanc)] text-2xl hidden">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <!-- Zone des messages -->
+                    <div class="flex-1 p-4 bg-[var(--second)] overflow-y-auto" id="chatbot-messages">
+                        <!-- Message automatique de l'admin -->
+                        <div class="flex justify-start mb-4">
+                            <div class="bg-[var(--beige)] text-[var(--blanc)] p-3 rounded-lg max-w-[70%] tapping-animation">
+                                Bonjour ! Comment puis-je vous aider ?
+                            </div>
+                        </div>
+
+                        <!-- Questions prédéfinies -->
+                        <div class="flex justify-start mb-4">
+                            <div class="bg-[var(--beige)] text-[var(--blanc)] p-3 rounded-lg max-w-[70%]">
+                                <p>Choisissez une question :</p>
+                                <ul class="mt-2 space-y-2">
+                                    <li
+                                        class="cursor-pointer hover:underline"
+                                        onclick="sendQuestion('Quels sont les horaires de check-in ?')"
+                                    >
+                                        Quels sont les horaires de check-in ?
+                                    </li>
+                                    <li
+                                        class="cursor-pointer hover:underline"
+                                        onclick="sendQuestion('Avez-vous des offres spéciales ?')"
+                                    >
+                                        Avez-vous des offres spéciales ?
+                                    </li>
+                                    <li
+                                        class="cursor-pointer hover:underline"
+                                        onclick="sendQuestion('Comment annuler une réservation ?')"
+                                    >
+                                        Comment annuler une réservation ?
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Zone de saisie -->
+                    <div class="flex border-t border-gray-200">
+                        <input
+                            type="text"
+                            id="chatbot-input"
+                            placeholder="Tapez votre message..."
+                            class="flex-1 p-3 outline-none"
+                            onkeypress="handleKeyPress(event)"
+                        />
+                        <button
+                            class="bg-[var(--beige)] text-[var(--blanc)] p-3 hover:bg-[var(--noir)] transition-colors duration-300"
+                            onclick="sendMessage()"
+                        >
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
         {% endblock %}
 
-        {% block body %}{% endblock %}
+        {% block body %}
+          
+        {% endblock %}
 
         {% block footer %}
             <!--=========================Footer====================-->
