@@ -87,38 +87,11 @@
 
             <!-- Galerie d'images avec Splide.js -->
             <div class="space-y-4">
-                <!-- Image principale -->
-                <div class="splide">
-                    <div class="splide__track">
-                        <ul class="splide__list">
-                            <li class="splide__slide">
-                                <img src="/img/chambres/{{chambre.image}}" alt="{{chambre.libelle}}" class="w-full h-96 object-cover rounded-lg">
-                            </li>
-                            <li class="splide__slide">
-                                <img src="img/chambres/pexels-jvdm-1457845.jpg" alt="Chambre Standard" class="w-full h-96 object-cover rounded-lg">
-                            </li>
-                            <li class="splide__slide">
-                                <img src="img/chambres/pexels-heyho-7535037.jpg" alt="Chambre Standard" class="w-full h-96 object-cover rounded-lg">
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Vignettes des images secondaires -->
-                <div class="splide splide--thumbnails">
-                    <div class="splide__track">
-                        <ul class="splide__list">
-                            <li class="splide__slide">
-                                <img src="/img/chambres/{{chambre.image}}" alt="{{chambre.libelle}}" class="w-full h-24 object-cover rounded-lg cursor-pointer">
-                            </li>
-                            <li class="splide__slide">
-                                <img src="img/chambres/pexels-jvdm-1457845.jpg" alt="Chambre Standard" class="w-full h-24 object-cover rounded-lg cursor-pointer">
-                            </li>
-                            <li class="splide__slide">
-                                <img src="img/chambres/pexels-heyho-7535037.jpg" alt="Chambre Standard" class="w-full h-24 object-cover rounded-lg cursor-pointer">
-                            </li>
-                        </ul>
-                    </div>
+                <!-- Image principale unique -->
+                <div>
+                    <img src="/img/chambres/{{ chambre.image }}" 
+                        alt="{{ chambre.libelle }}" 
+                        class="w-full h-96 object-cover rounded-lg shadow-lg">
                 </div>
             </div>
 
@@ -243,7 +216,7 @@
         </div>
     </section>
     <!-- Script pour initialiser Splide.js -->
-    <script>
+    {# <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Initialisation du carousel principal
             var main = new Splide('.splide', {
@@ -269,6 +242,6 @@
             main.mount();
             thumbnails.mount();
         });
-    </script>
+    </script> #}
 </body>
 {% endblock %}

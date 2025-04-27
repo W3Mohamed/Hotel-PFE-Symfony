@@ -38,46 +38,46 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/chambres', name: 'chambres')]
-    public function chambres(Request $request,EntityManagerInterface $entityManager,ChambresRepository $chambresRepo): Response
+    public function chambres(Request $request, EntityManagerInterface $entityManager, ChambresRepository $chambresRepo): Response
     {
         $session = $request->getSession();
         $sessionId = $session->getId();
         $reservationData = $session->get('reservation_data', []);
+        
         if ($request->isMethod('GET') && $request->query->get('checkin') && $request->query->get('checkout')) {
-            
             $dateArrive = new \DateTime($request->query->get('checkin'));
             $dateDepart = new \DateTime($request->query->get('checkout'));
             
             if ($dateArrive >= $dateDepart) {
                 throw new \Exception("La date de départ doit être après la date d'arrivée");
             }
+            
             // Vider le panier existant lorsque les dates changent
             $panier = $entityManager->getRepository(Panier::class)->findOneBy(['session_id' => $sessionId, 'status' => false]);
             
             if ($panier) {
-                // Suppression en cascade des PanierChambres et PanierServices
                 $entityManager->remove($panier);
                 $entityManager->flush();
             }
             
-            // Trouver les chambres indisponibles
-            $unavailableRoomIds = $chambresRepo->findUnavailableRoomsForDates($dateArrive, $dateDepart);
-
+            // Trouver le nombre de réservations pour chaque chambre
+            $reservedCounts = $chambresRepo->findReservedCountsForDates($dateArrive, $dateDepart);
+    
             $reservationData = [
                 'dateArrive' => $dateArrive,
                 'dateDepart' => $dateDepart,
                 'nbAdulte' => (int)$request->query->get('adults'),
                 'nbEnfant' => (int)$request->query->get('children'),
-                'chambresIndisponibles' => $unavailableRoomIds
+                'reservedCounts' => $reservedCounts // Stocker les comptes de réservations
             ];
-            // Ne pas toucher à chambresIndisponibles ici
+            
             $session->set('reservation_data', $reservationData);
         }
-
-        $chambres = empty($reservationData)
-         ? $chambresRepo->findAll()
-         : $chambresRepo->findAvailableRooms($reservationData['chambresIndisponibles'] ?? []);
     
+        $chambres = empty($reservationData)
+            ? $chambresRepo->findAll()
+            : $chambresRepo->findAvailableRooms($reservationData['reservedCounts'] ?? []);
+        
         return $this->render('chambres.html.twig', [
             'chambres' => $chambres,
             'reservation_data' => $reservationData
@@ -85,12 +85,11 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/store-dates', name: 'store_dates')]
-    public function storeDates(Request $request, EntityManagerInterface $em): Response
+    public function storeDates(Request $request, EntityManagerInterface $em, ChambresRepository $chambresRepo): Response
     {
         $session = $request->getSession();
         $sessionId = $session->getId();
 
-        // Valider les dates
         $checkin = new \DateTime($request->query->get('checkin'));
         $checkout = new \DateTime($request->query->get('checkout'));
         
@@ -99,26 +98,11 @@ final class HotelController extends AbstractController
             return $this->redirectToRoute('accueil');
         }
 
-        // Vérifier la disponibilité des chambres
-        $chambresIndisponibles = $em->getRepository(Panier::class)
-            ->createQueryBuilder('p')
-            ->join('p.panierChambres', 'pc')
-            ->where('p.status = :status')
-            ->andWhere('p.dateArrive < :checkout')
-            ->andWhere('p.dateDepart > :checkin')
-            ->setParameter('status', true) // Seulement les réservations confirmées
-            ->setParameter('checkin', $checkin)
-            ->setParameter('checkout', $checkout)
-            ->select('IDENTITY(pc.chambre) as chambreId')
-            ->getQuery()
-            ->getResult();
+        // Trouver le nombre de réservations pour chaque chambre
+        $reservedCounts = $chambresRepo->findReservedCountsForDates($checkin, $checkout);
 
-        // Convertir en tableau simple d'IDs
-        $chambresIndisponiblesIds = array_column($chambresIndisponibles, 'chambreId');
-
-        // Vider le panier existant (même logique que dans /chambres)
-        $panier = $em->getRepository(Panier::class)->findOneBy(['session_id' => $sessionId , 'status' => false]);
-        
+        // Vider le panier existant
+        $panier = $em->getRepository(Panier::class)->findOneBy(['session_id' => $sessionId, 'status' => false]);
         if ($panier) {
             $em->remove($panier);
             $em->flush();
@@ -130,7 +114,7 @@ final class HotelController extends AbstractController
             'dateDepart' => $checkout,
             'nbAdulte' => (int)$request->query->get('adults'),
             'nbEnfant' => (int)$request->query->get('children'),
-            'chambresIndisponibles' => $chambresIndisponiblesIds // Stocker les IDs des chambres indisponibles
+            'reservedCounts' => $reservedCounts
         ]);
 
         return $this->redirectToRoute('chambres');
@@ -145,21 +129,26 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/detail/{id}', methods:['GET'], name: 'detail')]
-    public function detail(Request $request, EntityManagerInterface $entityManager, Chambres $chambre,ChambresRepository $chambresRepo): Response
+    public function detail(Request $request, EntityManagerInterface $entityManager, Chambres $chambre, ChambresRepository $chambresRepo): Response
     {
         $session = $request->getSession();
         $reservationData = $session->get('reservation_data');
-        $isAvailable = true;
-        if ($reservationData) {
-            $unavailableRoomIds = $reservationData['chambresIndisponibles'] ?? [];
-            $isAvailable = !in_array($chambre->getId(), $unavailableRoomIds);
+        
+        $availableCount = $chambre->getNombre(); // Nombre total de cette chambre
+        
+        if ($reservationData && isset($reservationData['reservedCounts'][$chambre->getId()])) {
+            $availableCount -= $reservationData['reservedCounts'][$chambre->getId()];
         }
+        
+        $isAvailable = $availableCount > 0;
+        
         $services = $entityManager->getRepository(Services::class)->findAll();
         return $this->render('detail.html.twig', [
             'chambre' => $chambre,
             'services' => $services,
             'reservation_data' => $reservationData,
-            'is_available' => $isAvailable
+            'is_available' => $isAvailable,
+            'available_count' => $availableCount
         ]);
     }
 
