@@ -74,6 +74,15 @@
         </table>
         {% endif %}
 
+        <hr>
+        <p style="font-size: 14px;">
+            Si vous souhaitez annuler votre réservation, cliquez ici :
+            <a href="{{ site_url }}/annuler/{{ reservation.id }}/{{ reservation.token }}">
+                Annuler ma réservation
+            </a>
+        </p>
+
+
         <h2>Politique de l'hôtel</h2>
         <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #e5bd43; margin-bottom: 20px;">
             <h3 style="margin-top: 0;">Conditions de paiement</h3>

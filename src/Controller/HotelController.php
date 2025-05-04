@@ -315,13 +315,14 @@ final class HotelController extends AbstractController
                         $panierServices[] = $service;
                     }
                 }
-        
+                $siteUrl = $this->getParameter('site_url');
                 $htmlContent = $this->renderView('emails/reservation_confirmation.html.twig', [
                     'user' => $user,
                     'reservation' => $reservation,
                     'panier' => $panier,
                     'panierChambres' => $panierChambres,
-                    'panierServices' => $panierServices
+                    'panierServices' => $panierServices,
+                    'site_url' => $siteUrl
                 ]);
 
                 $email = (new Email())
