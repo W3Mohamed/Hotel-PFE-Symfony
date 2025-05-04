@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Chambres;
+use App\Entity\Contact;
 use App\Entity\Event;
 use App\Entity\Reservations;
 use App\Entity\Services;
@@ -35,6 +36,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Services', 'fas fa-concierge-bell', Services::class);
         yield MenuItem::linkToCrud('Reservations', 'fas fa-receipt', Reservations::class);
         yield MenuItem::linkToCrud('Événements', 'fas fa-calendar-alt', Event::class);
+        yield MenuItem::linkToCrud('Messages de contact', 'fas fa-envelope', Contact::class);
         
         // Ajouter un lien vers la création de réservation manuelle
         yield MenuItem::section('Outils');

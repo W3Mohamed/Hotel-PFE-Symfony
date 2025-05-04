@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Chambres;
+use App\Entity\Contact;
 use App\Entity\Panier;
 use App\Entity\PanierChambres;
 use App\Entity\PanierService;
@@ -18,6 +19,9 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -124,10 +128,51 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/contact', name: 'contact')]
-    public function contact(): Response
+    public function contact(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $contact = new Contact();
+        $form = $this->createFormBuilder($contact)
+            ->add('name', TextType::class, [
+                'label' => 'Nom Complet',
+                'attr' => [
+                    'class' => 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--beige)] focus:border-[var(--beige)]'
+                ]
+            ])
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
+                'attr' => [
+                    'class' => 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--beige)] focus:border-[var(--beige)]'
+                ]
+            ])
+            ->add('subject', TextType::class, [
+                'label' => 'Sujet',
+                'attr' => [
+                    'class' => 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--beige)] focus:border-[var(--beige)]'
+                ]
+            ])
+            ->add('message', TextareaType::class, [
+                'label' => 'Message',
+                'attr' => [
+                    'rows' => 5,
+                    'class' => 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--beige)] focus:border-[var(--beige)]'
+                ]
+            ])
+            ->getForm();
+    
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($contact);
+            $entityManager->flush();
+    
+            // Ajoutez ce code pour SweetAlert
+            $this->addFlash('success', 'Votre message a été envoyé avec succès!');
+    
+            return $this->redirectToRoute('contact');
+        }
+    
         return $this->render('contact.html.twig', [
-            'controller_name' => 'HotelController',
+            'form' => $form->createView(),
         ]);
     }
 
