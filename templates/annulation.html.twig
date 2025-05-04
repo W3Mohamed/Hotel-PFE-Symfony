@@ -1,0 +1,108 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <style>
+        .confirmation-box {
+            transition: all 0.3s ease;
+        }
+        .confirmation-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .btn-annuler {
+            transition: all 0.3s ease;
+        }
+        .btn-annuler:hover {
+            transform: scale(1.05);
+        }
+    </style>
+
+    <!-- Hero Section -->
+    <section class="relative bg-[linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url('{{ asset('img/about1.jpg') }}')] bg-center bg-cover h-96 flex items-center justify-center">
+        <div class="text-center text-white">
+            <h1 class="text-4xl md:text-5xl font-semibold mb-4">Annulation de réservation</h1>
+            <p class="text-xl max-w-2xl mx-auto">
+                Vous êtes sur le point d'annuler votre réservation #{{ reservation.id }}
+            </p>
+        </div>
+    </section>
+
+    <!-- Confirmation Section -->
+    <section class="container mx-auto px-4 py-16 max-w-4xl">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden confirmation-box">
+            <!-- Header -->
+            <div class="bg-[var(--beige)] p-6 text-white">
+                <h2 class="text-2xl font-semibold">Confirmez l'annulation</h2>
+            </div>
+            
+            <!-- Content -->
+            <div class="p-8">
+                {% if reservation.status != "Annulée" %}
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-[var(--noir)] mb-4">Détails de la réservation</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <p class="text-gray-600"><span class="font-medium">Numéro :</span> #{{ reservation.id }}</p>
+                            <p class="text-gray-600"><span class="font-medium">Date d'arrivée:</span> {{ reservation.panier.dateArrive|date('d/m/Y') }}</p>
+                            <p class="text-gray-600"><span class="font-medium">Statut :</span> {{ reservation.status }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600"><span class="font-medium">Montant total :</span> {{ reservation.prixTotal }} €</p>
+                            <p class="text-gray-600"><span class="font-medium">Date depart:</span> {{ reservation.panier.dateDepart|date('d/m/Y') }}</p>
+                            <p class="text-gray-600"><span class="font-medium">Client :</span> {{ reservation.user.prenom }} {{ reservation.user.nom }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-yellow-700">
+                                    {% if reservation.panier.dateArrive < date('+3 days') %}
+                                        <span class="font-bold">Des frais d’annulation s’appliquent :</span> un montant équivalent à une nuitée sera prélevé.
+                                    {% else %}
+                                        <span class="font-bold">Annulation gratuite :</span> aucun frais ne sera appliqué si vous annulez maintenant.
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <form method="POST" action="{{ path('confirmer_annulation', {id: reservation.id, token: reservation.token}) }}" class="w-full sm:w-auto">
+                        <button type="submit" class="btn-annuler w-full bg-red-600 hover:bg-red-700 text-white py-3 px-8 rounded-sm font-semibold">
+                            Confirmer l'annulation
+                        </button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="bg-red-50 border-l-4 border-red-400 p-6">
+                    <h3 class="text-lg font-semibold text-red-700 mb-2">Réservation annulée</h3>
+                    <p class="text-sm text-red-600">
+                        Votre réservation a été annulée avec succès. Si vous avez des questions ou si vous souhaitez effectuer une nouvelle réservation, n’hésitez pas à nous contacter.
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Policy Section -->
+    <section class="container mx-auto px-4 py-4 max-w-4xl">
+        <div class="bg-[var(--second)] p-8 rounded-lg">
+            <h3 class="text-xl font-semibold text-[var(--noir)] mb-4">Politique d'annulation</h3>
+            <ul class="list-disc pl-5 space-y-2 text-gray-600">
+                <li>Annulation gratuite jusqu'à 3 jours avant la date d'arrivée</li>
+                <li>Annulation tardive : frais d'une nuitée</li>
+                <li>Aucun remboursement après le check-in</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}

@@ -10,6 +10,8 @@ use App\Entity\Reservations;
 use App\Entity\Services;
 use App\Entity\User;
 use App\Repository\ChambresRepository;
+use App\Repository\ReservationsRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mime\Email;
@@ -277,12 +279,15 @@ final class HotelController extends AbstractController
             $panier->setStatus(true);
             $em->persist($panier);
 
+            $token = bin2hex(random_bytes(16));
+
             // 4. Créer une nouvelle réservation
             $reservation = new Reservations();
             $reservation->setStatus('Confirmée'); // ou autre statut initial
             $reservation->setPrixTotal((float) $request->request->get('total')); 
             $reservation->setDateCreation(new \DateTimeImmutable());
             $reservation->setCommentaire($request->request->get('commentaires'));
+            $reservation->setToken($token);
             $reservation->setUser($user);
             $reservation->setPanier($panier);
             
@@ -370,5 +375,41 @@ final class HotelController extends AbstractController
         }
 
 
+    }
+
+    #[Route('/annuler/{id}/{token}', name: 'annuler_reservation')]
+    public function annulerReservation(EntityManagerInterface $em,int $id, string $token): Response
+    {
+
+        $reservation = $em->getRepository(Reservations::class)->find($id);
+
+        if (!$reservation || $reservation->getToken() !== $token) {
+            throw $this->createNotFoundException('Réservation non trouvée ou token invalide');
+        }
+
+        // 2. Afficher la page de confirmation
+        return $this->render('annulation.html.twig', [
+            'reservation' => $reservation,
+        ]);
+    }
+
+    #[Route('/confirmer_annulation/{id}/{token}', name: 'confirmer_annulation')]
+    public function confirmerAnnulation(EntityManagerInterface $em,int $id, string $token): Response
+    {
+
+        $reservation = $em->getRepository(Reservations::class)->find($id);
+
+        if (!$reservation || $reservation->getToken() !== $token) {
+            throw $this->createNotFoundException('Réservation non trouvée ou token invalide');
+        }
+
+        $reservation->setStatus('Annulée');
+        $em->persist($reservation);
+        $em->flush();
+
+        return $this->redirectToRoute('annuler_reservation', [
+            'id' => $reservation->getId(),
+            'token' => $reservation->getToken(),
+        ]);        
     }
 }

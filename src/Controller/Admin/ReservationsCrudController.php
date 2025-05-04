@@ -21,17 +21,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\{
     ChoiceFilter,
     DateTimeFilter
 };
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class ReservationsCrudController extends AbstractCrudController
 {
-    private $requestStack;
-
-    public function __construct(RequestStack $requestStack)
-    {
-        $this->requestStack = $requestStack;
-    }
-
     public static function getEntityFqcn(): string
     {
         return Reservations::class;
@@ -44,54 +36,28 @@ class ReservationsCrudController extends AbstractCrudController
             ->setEntityLabelInPlural('Réservations')
             ->setPageTitle('index', 'Gestion des réservations')
             ->setPaginatorPageSize(20)
-            ->setDefaultSort(['panier.dateArrive' => 'ASC']);
+            ->setDefaultSort(['date_creation' => 'DESC']);
     }
 
     public function configureActions(Actions $actions): Actions
     {
-        $upcomingAction = Action::new('upcoming', 'À venir (3 jours)')
-            ->linkToCrudAction('index')
-            ->setCssClass('btn btn-warning');
-            // ->setQueryParameter('upcoming', true);
-
         return $actions
             ->disable('new')
             ->add('index', 'detail')
             ->update('index', 'edit', function (Action $action) {
                 return $action->setIcon('fa fa-edit')->setLabel('Modifier statut');
-            })
-            ->add('index', $upcomingAction);
+            });
     }
 
-    public function configureFilters(Filters $filters): Filters
-    {
-        return $filters
-            ->add(ChoiceFilter::new('status')->setChoices([
-                'En cours' => 'En cours',
-                'Confirmée' => 'Confirmée',
-                'Annulée' => 'Annulée'
-            ]))
-            ->add(DateTimeFilter::new('panier.dateArrive', 'Date d\'arrivée'));
-    }
-
-    // public function createIndexQueryBuilder($entityClass, $sortField, $sortDirection)
+    // public function configureFilters(Filters $filters): Filters
     // {
-    //     $qb = parent::createIndexQueryBuilder($entityClass, $sortField, $sortDirection);
-        
-    //     $request = $this->requestStack->getCurrentRequest();
-    //     if ($request && $request->query->get('upcoming')) {
-    //         $now = new \DateTime();
-    //         $in3Days = (new \DateTime())->modify('+3 days');
-            
-    //         $qb->join('entity.panier', 'p')
-    //            ->andWhere('entity.status = :status')
-    //            ->andWhere('p.dateArrive BETWEEN :now AND :in3Days')
-    //            ->setParameter('status', 'Confirmée')
-    //            ->setParameter('now', $now)
-    //            ->setParameter('in3Days', $in3Days);
-    //     }
-        
-    //     return $qb;
+    //     return $filters
+    //         ->add(ChoiceFilter::new('status')->setChoices([
+    //             'En cours' => 'En cours',
+    //             'Confirmée' => 'Confirmée',
+    //             'Annulée' => 'Annulée'
+    //         ]))
+    //         ->add(DateTimeFilter::new('panier.dateArrive', 'Date d\'arrivée'));
     // }
 
     public function configureFields(string $pageName): iterable
@@ -127,32 +93,12 @@ class ReservationsCrudController extends AbstractCrudController
                 
             DateTimeField::new('panier.dateArrive', 'Date arrivée')
                 ->setFormat('dd/MM/Y')
-                ->setCustomOption('widget', 'single_text')
-                ->formatValue(function ($value, $entity) {
-                    if (!$entity->getPanier()) {
-                        return '';
-                    }
-                    
-                    $dateArrive = $entity->getPanier()->getDateArrive();
-                    $now = new \DateTime();
-                    $diff = $now->diff($dateArrive);
-                    
-                    if ($entity->getStatus() === 'Confirmée' && $diff->days <= 3 && !$diff->invert) {
-                        return sprintf(
-                            '<span class="badge badge-warning">%s (dans %d jours)</span>',
-                            $dateArrive->format('d/m/Y'),
-                            $diff->days
-                        );
-                    }
-                    
-                    return $dateArrive->format('d/m/Y');
-                }),
+                ->setCustomOption('widget', 'single_text'),
                 
             TextareaField::new('commentaire', 'Commentaire')
                 ->hideOnIndex(),
         ];
 
-        // Champs détaillés
         if ($pageName === Crud::PAGE_DETAIL) {
             $fields[] = TextField::new('user.nom', 'Nom')->onlyOnDetail();
             $fields[] = TextField::new('user.prenom', 'Prénom')->onlyOnDetail();
@@ -193,9 +139,8 @@ class ReservationsCrudController extends AbstractCrudController
                         }
                         
                         $details[] = sprintf(
-                            "<strong>%s × %d</strong><br>Services: %s",
+                            "<strong>%s</strong><br>Services: %s",
                             $chambre->getLibelle(),
-                            $panierChambre->getQuantite(),
                             $services ? implode(', ', $services) : 'Aucun service'
                         );
                     }
