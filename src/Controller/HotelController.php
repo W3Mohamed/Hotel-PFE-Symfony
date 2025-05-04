@@ -394,7 +394,8 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/confirmer_annulation/{id}/{token}', name: 'confirmer_annulation')]
-    public function confirmerAnnulation(EntityManagerInterface $em,int $id, string $token): Response
+    public function confirmerAnnulation(EntityManagerInterface $em,int $id, string $token,MailerInterface $mailer,
+     LoggerInterface $logger): Response
     {
 
         $reservation = $em->getRepository(Reservations::class)->find($id);
@@ -403,9 +404,52 @@ final class HotelController extends AbstractController
             throw $this->createNotFoundException('Réservation non trouvée ou token invalide');
         }
 
+        $panier = $reservation->getPanier();
+        $dateArrivee = $panier->getDateArrive();
+        $aujourdhui = new \DateTimeImmutable();
+        $nbJoursAvant = $aujourdhui->diff($dateArrivee)->days;
+        $annulationGratuite = $aujourdhui < $dateArrivee && $nbJoursAvant > 3;
+
+        $montantRetenu = 0;
+        if (!$annulationGratuite) {
+            $nbNuits = $dateArrivee->diff($panier->getDateDepart())->days;
+            $montantRetenu = $reservation->getPrixTotal() / $nbNuits;
+        }
+
         $reservation->setStatus('Annulée');
         $em->persist($reservation);
         $em->flush();
+
+        // Envoi de l'email d'annulation
+        try {
+            $htmlContent = $this->renderView('emails/reservation_annulation.html.twig', [
+                'user' => $reservation->getUser(),
+                'reservation' => $reservation,
+                'panier' => $panier,
+                'montantRetenu' => $montantRetenu,
+                'annulationGratuite' => $annulationGratuite,
+            ]);
+            $dsn = 'smtp://mohamedbenachenhou430@gmail.com:fcunsvkgyjpcsqhz@smtp.gmail.com:587';
+            $transport = Transport::fromDsn($dsn);
+            
+            // Créer manuellement l'objet Mailer
+            $mailer = new Mailer($transport);
+            $email = (new Email())
+                ->from(new Address('mohamedbenachenhou430@gmail.com', 'Hôtel Roxal'))
+                ->to(new Address($reservation->getUser()->getEmail(), $reservation->getUser()->getPrenom().' '.$reservation->getUser()->getNom()))
+                ->subject('Annulation de votre réservation #'.$reservation->getId())
+                ->html($htmlContent);
+
+            $mailer->send($email);
+            $this->addFlash('success', 'Réservation annulée et email envoyé avec succès.');
+        } catch (\Throwable $e) {
+            $logger->error('Erreur envoi email d’annulation', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'reservation_id' => $reservation->getId()
+            ]);
+            $this->addFlash('warning', 'Réservation annulée, mais erreur lors de l’envoi de l’email.');
+        }
 
         return $this->redirectToRoute('annuler_reservation', [
             'id' => $reservation->getId(),
