@@ -1,0 +1,219 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="my-4">Détail de la réservation #{{ reservation.id }}</h1>
+        
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        
+        <div class="mb-3">
+            <a href="{{ path('admin_reservation_new') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Nouvelle réservation
+            </a>
+            {% if app.router.getRouteCollection().get('admin_reservations_list') %}
+                <a href="{{ path('admin_reservations_list') }}" class="btn btn-secondary ms-2">
+                    <i class="fas fa-list me-1"></i> Liste des réservations
+                </a>
+            {% else %}
+                <a href="{{ path('admin') }}?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CReservationsCrudController" class="btn btn-secondary ms-2">
+                    <i class="fas fa-list me-1"></i> Liste des réservations
+                </a>
+            {% endif %}
+        </div>
+        
+        <div class="row">
+            <!-- Informations client -->
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-user me-1"></i>
+                        Informations client
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-3 fw-bold">Nom</div>
+                            <div class="col-md-9">{{ reservation.user.nom }} {{ reservation.user.prenom }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3 fw-bold">Email</div>
+                            <div class="col-md-9">{{ reservation.user.email }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3 fw-bold">Téléphone</div>
+                            <div class="col-md-9">{{ reservation.user.telephone }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3 fw-bold">Adresse</div>
+                            <div class="col-md-9">
+                                {{ reservation.user.adresse }}<br>
+                                {{ reservation.user.codePostale }} {{ reservation.user.ville }}<br>
+                                {{ reservation.user.pays }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Informations réservation -->
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Informations réservation
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Statut</div>
+                            <div class="col-md-8">
+                                <span class="badge bg-success">{{ reservation.status }}</span>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Date de création</div>
+                            <div class="col-md-8">{{ reservation.dateCreation|date('d/m/Y H:i') }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Période</div>
+                            <div class="col-md-8">
+                                Du {{ reservation.panier.dateArrive|date('d/m/Y') }} au {{ reservation.panier.dateDepart|date('d/m/Y') }}
+                                ({{ nombre_nuits }} nuit{{ nombre_nuits > 1 ? 's' : '' }})
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Voyageurs</div>
+                            <div class="col-md-8">
+                                {{ reservation.panier.nbAdulte }} adulte{{ reservation.panier.nbAdulte > 1 ? 's' : '' }}
+                                {% if reservation.panier.nbEnfant > 0 %}
+                                , {{ reservation.panier.nbEnfant }} enfant{{ reservation.panier.nbEnfant > 1 ? 's' : '' }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Prix total</div>
+                            <div class="col-md-8">
+                                <span class="text-success fw-bold">{{ reservation.prixTotal }}€</span>
+                            </div>
+                        </div>
+                        {% if reservation.commentaire %}
+                            <div class="row mb-2">
+                                <div class="col-md-4 fw-bold">Commentaire</div>
+                                <div class="col-md-8">{{ reservation.commentaire }}</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Détail des chambres -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-bed me-1"></i>
+                Détail des chambres réservées
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Chambre</th>
+                                <th>Capacité</th>
+                                <th>Prix unitaire</th>
+                                <th>Services</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for panierChambre in reservation.panier.panierChambres %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ asset('uploads/chambres/' ~ panierChambre.chambre.image) }}" alt="{{ panierChambre.chambre.libelle }}" class="me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                            <div>
+                                                <strong>{{ panierChambre.chambre.libelle }}</strong><br>
+                                                <small class="text-muted">{{ panierChambre.chambre.petitDesc }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ panierChambre.chambre.capacite }} pers.</td>
+                                    <td>{{ panierChambre.chambre.prix }}€ x {{ nombre_nuits }} nuit(s)</td>
+                                    <td>
+                                        {% if panierChambre.panierServices|length > 0 %}
+                                            <ul class="list-unstyled mb-0">
+                                                {% for panierService in panierChambre.panierServices %}
+                                                    <li>{{ panierService.service.libelle }} ({{ panierService.service.prix }}€/nuit)</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <span class="text-muted">Aucun service</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% set chambreTotal = panierChambre.chambre.prix * nombre_nuits %}
+                                        {% set servicesTotal = 0 %}
+                                        {% for panierService in panierChambre.panierServices %}
+                                            {% set servicesTotal = servicesTotal + (panierService.service.prix * nombre_nuits) %}
+                                        {% endfor %}
+                                        <strong>{{ chambreTotal + servicesTotal }}€</strong>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" class="text-end fw-bold">Total</td>
+                                <td class="text-end fw-bold text-success">{{ reservation.prixTotal }}€</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-cogs me-1"></i>
+                Actions
+            </div>
+            <div class="card-body">
+                <div class="btn-group">
+                    <a href="#" class="btn btn-outline-primary">
+                        <i class="fas fa-print me-1"></i> Imprimer
+                    </a>
+                    <a href="#" class="btn btn-outline-info">
+                        <i class="fas fa-envelope me-1"></i> Envoyer par email
+                    </a>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                        <i class="fas fa-times-circle me-1"></i> Annuler la réservation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal d'annulation -->
+    <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelModalLabel">Confirmer l'annulation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir annuler cette réservation ? Cette action est irréversible.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    {% if app.router.getRouteCollection().get('admin_reservation_cancel') %}
+                        <a href="{{ path('admin_reservation_cancel', {id: reservation.id}) }}" class="btn btn-danger">Confirmer l'annulation</a>
+                    {% else %}
+                        <a href="#" class="btn btn-danger" onclick="alert('Fonctionnalité non implémentée')">Confirmer l'annulation</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

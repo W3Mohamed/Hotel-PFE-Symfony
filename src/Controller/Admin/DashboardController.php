@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Chambres;
+use App\Entity\Event;
 use App\Entity\Reservations;
 use App\Entity\Services;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -11,8 +12,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-
-
 
 class DashboardController extends AbstractDashboardController
 {
@@ -35,5 +34,11 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Chambres', 'fas fa-bed', Chambres::class);
         yield MenuItem::linkToCrud('Services', 'fas fa-concierge-bell', Services::class);
         yield MenuItem::linkToCrud('Reservations', 'fas fa-receipt', Reservations::class);
+        yield MenuItem::linkToCrud('Événements', 'fas fa-calendar-alt', Event::class);
+        
+        // Ajouter un lien vers la création de réservation manuelle
+        yield MenuItem::section('Outils');
+        yield MenuItem::linkToRoute('Nouvelle réservation', 'fas fa-calendar-plus', 'admin_reservation_new');
+        yield MenuItem::linkToRoute('Gestion des réservations', 'fas fa-list-alt', 'admin_reservations_list');
     }
 }

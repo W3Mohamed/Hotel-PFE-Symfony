@@ -10,6 +10,7 @@ use App\Entity\Reservations;
 use App\Entity\Services;
 use App\Entity\User;
 use App\Repository\ChambresRepository;
+use App\Repository\EventRepository;
 use App\Repository\ReservationsRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -236,6 +237,18 @@ final class HotelController extends AbstractController
     {
         return $this->render('propos.html.twig', [
             'controller_name' => 'HotelController',
+        ]);
+    }
+
+    #[Route('/evenements', name: 'app_events')]
+    public function event(EventRepository $eventRepository): Response
+    {
+        $featuredEvents = $eventRepository->findBy(['isFeatured' => true], ['date' => 'ASC']);
+        $events = $eventRepository->findBy(['isFeatured' => false], ['date' => 'ASC']);
+
+        return $this->render('event.html.twig', [
+            'featuredEvents' => $featuredEvents,
+            'events' => $events,
         ]);
     }
 

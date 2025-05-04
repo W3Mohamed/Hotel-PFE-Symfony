@@ -1,0 +1,230 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="my-4">Créer une réservation (Admin)</h1>
+        
+        {% for error in errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endfor %}
+        
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+        
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endfor %}
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-calendar-alt me-1"></i>
+                Dates et informations
+            </div>
+            <div class="card-body">
+                {# Formulaire de dates #}
+                <form method="get" action="{{ path('admin_reservation_new') }}">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label">Date arrivée</label>
+                            <input type="date" name="dateArrive" value="{{ reservation_data.dateArrive ? reservation_data.dateArrive|date('Y-m-d') : '' }}" class="form-control" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Date départ</label>
+                            <input type="date" name="dateDepart" value="{{ reservation_data.dateDepart ? reservation_data.dateDepart|date('Y-m-d') : '' }}" class="form-control" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Adultes</label>
+                            <input type="number" name="adults" value="{{ reservation_data.nbAdulte ?? 1 }}" min="1" class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Enfants</label>
+                            <input type="number" name="children" value="{{ reservation_data.nbEnfant ?? 0 }}" min="0" class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary mt-4">Vérifier disponibilité</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        {% if reservation_data.dateArrive and reservation_data.dateDepart %}
+            <div class="row">
+                <!-- Chambres disponibles -->
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-bed me-1"></i>
+                            Chambres disponibles ({{ nombre_nuits }} nuit{{ nombre_nuits > 1 ? 's' : '' }})
+                        </div>
+                        <div class="card-body">
+                            {% if chambres|length > 0 %}
+                                <div class="row">
+                                    {% for chambre in chambres %}
+                                        <div class="col-md-6 mb-4">
+                                            <div class="card h-100">
+                                                <img src="{{ asset('uploads/chambres/' ~ chambre.image) }}" class="card-img-top" alt="{{ chambre.libelle }}">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">{{ chambre.libelle }}</h5>
+                                                    <p class="card-text">{{ chambre.petitDesc }}</p>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span class="h5 text-success">{{ chambre.prix }} €/nuit</span>
+                                                        <span class="badge bg-info">Capacité: {{ chambre.capacite }} pers.</span>
+                                                    </div>
+                                                    
+                                                    <form method="post" action="{{ path('admin_reservation_add_chambre') }}" class="mt-3">
+                                                        <input type="hidden" name="chambre_id" value="{{ chambre.id }}">
+                                                        <input type="hidden" name="dateArrive" value="{{ reservation_data.dateArrive|date('Y-m-d') }}">
+                                                        <input type="hidden" name="dateDepart" value="{{ reservation_data.dateDepart|date('Y-m-d') }}">
+                                                        <input type="hidden" name="nbAdulte" value="{{ reservation_data.nbAdulte }}">
+                                                        <input type="hidden" name="nbEnfant" value="{{ reservation_data.nbEnfant }}">
+                                                        
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-bold">Services optionnels:</label>
+                                                            {% for service in services %}
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="services[]" value="{{ service.id }}" id="service{{ service.id }}_{{ chambre.id }}">
+                                                                    <label class="form-check-label" for="service{{ service.id }}_{{ chambre.id }}">
+                                                                        {{ service.libelle }} (+{{ service.prix }}€/nuit)
+                                                                    </label>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                        
+                                                        <button type="submit" class="btn btn-primary w-100">Ajouter au panier</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-warning">
+                                    Aucune chambre disponible pour ces dates.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Panier actuel -->
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-shopping-cart me-1"></i>
+                            Panier en cours
+                        </div>
+                        <div class="card-body">
+                            {% if panier and panier.panierChambres is not empty %}
+                                <ul class="list-group mb-3">
+                                    {% for panierChambre in panier.panierChambres %}
+                                        <li class="list-group-item">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h6 class="my-0">{{ panierChambre.chambre.libelle }}</h6>
+                                                    <small class="text-muted">{{ panierChambre.chambre.prix }}€ x {{ nombre_nuits }} nuit(s)</small>
+                                                    
+                                                    {% if panierChambre.panierServices|length > 0 %}
+                                                        <ul class="list-unstyled ms-3 small">
+                                                            {% for panierService in panierChambre.panierServices %}
+                                                                <li>+ {{ panierService.service.libelle }} ({{ panierService.service.prix }}€/nuit)</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <span class="text-primary">
+                                                        {% set chambreTotal = panierChambre.chambre.prix * nombre_nuits %}
+                                                        {% set servicesTotal = 0 %}
+                                                        {% for panierService in panierChambre.panierServices %}
+                                                            {% set servicesTotal = servicesTotal + (panierService.service.prix * nombre_nuits) %}
+                                                        {% endfor %}
+                                                        {{ chambreTotal + servicesTotal }}€
+                                                    </span>
+                                                    <a href="{{ path('admin_reservation_remove_chambre', {id: panierChambre.id}) }}" class="btn btn-sm btn-outline-danger ms-2">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <h5>Total</h5>
+                                    <h5 class="text-success">{{ prix_total }}€</h5>
+                                </div>
+                                
+                                <hr>
+                                
+                                <!-- Formulaire de confirmation -->
+                                <form method="post" action="{{ path('admin_reservation_confirm') }}">
+                                    <h5 class="mb-3">Informations client</h5>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Nom</label>
+                                            <input type="text" name="nom" class="form-control" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Prénom</label>
+                                            <input type="text" name="prenom" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" name="email" class="form-control" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Téléphone</label>
+                                            <input type="tel" name="telephone" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Adresse</label>
+                                        <input type="text" name="adresse" class="form-control" required>
+                                    </div>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Ville</label>
+                                            <input type="text" name="ville" class="form-control" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Code postal</label>
+                                            <input type="text" name="code_postal" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Pays</label>
+                                        <input type="text" name="pays" class="form-control" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Commentaire</label>
+                                        <textarea name="commentaire" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-success w-100">Confirmer la réservation</button>
+                                </form>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    Le panier est vide. Ajoutez des chambres pour créer une réservation.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
