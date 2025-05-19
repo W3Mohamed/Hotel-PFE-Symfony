@@ -16,11 +16,11 @@ class FaqRepository extends ServiceEntityRepository
         parent::__construct($registry, Faq::class);
     }
 
-    public function findByCategoryOrdered($categoryId)
+    public function findByCategory(int $categoryId): array
     {
         return $this->createQueryBuilder('f')
-            ->andWhere('f.category = :category')
-            ->setParameter('category', $categoryId)
+            ->where('f.category = :categoryId')
+            ->setParameter('categoryId', $categoryId)
             ->orderBy('f.displayOrder', 'ASC')
             ->getQuery()
             ->getResult();
