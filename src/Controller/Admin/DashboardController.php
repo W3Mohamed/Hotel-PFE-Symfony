@@ -2,9 +2,11 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Category;
 use App\Entity\Chambres;
 use App\Entity\Contact;
 use App\Entity\Event;
+use App\Entity\Faq;
 use App\Entity\Reservations;
 use App\Entity\Services;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -37,10 +39,13 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Reservations', 'fas fa-receipt', Reservations::class);
         yield MenuItem::linkToCrud('Événements', 'fas fa-calendar-alt', Event::class);
         yield MenuItem::linkToCrud('Messages de contact', 'fas fa-envelope', Contact::class);
-        
+
+        yield MenuItem::section('ChatBot');
+        yield MenuItem::linkToCrud('Categorie', 'fas fa-envelope', Category::class);
+        yield MenuItem::linkToCrud('F.A.Q', 'fas fa-envelope', Faq::class);
         // Ajouter un lien vers la création de réservation manuelle
-        yield MenuItem::section('Outils');
-        yield MenuItem::linkToRoute('Nouvelle réservation', 'fas fa-calendar-plus', 'admin_reservation_new');
-        yield MenuItem::linkToRoute('Gestion des réservations', 'fas fa-list-alt', 'admin_reservations_list');
+    //     yield MenuItem::section('Outils');
+    //     yield MenuItem::linkToRoute('Nouvelle réservation', 'fas fa-calendar-plus', 'admin_reservation_new');
+    //     yield MenuItem::linkToRoute('Gestion des réservations', 'fas fa-list-alt', 'admin_reservations_list');
     }
 }
