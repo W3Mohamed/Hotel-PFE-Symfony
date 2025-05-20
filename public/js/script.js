@@ -1,25 +1,38 @@
 // Déclarer les fonctions du chatbot dans le scope global
 function toggleChatbot() {
-  const chatbotWindow = document.getElementById('chatbot-window');
-  const closeChatbotBtn = document.getElementById('close-chatbot-btn');
-  const chatbotToggleButton = document.getElementById('chatbot-toggle-button'); // On récupère le bouton rond
+    const chatbotWindow = document.getElementById('chatbot-window');
+    const closeChatbotBtn = document.getElementById('close-chatbot-btn');
+    const chatbotToggleButton = document.getElementById('chatbot-toggle-button');
 
-  if (chatbotWindow && closeChatbotBtn && chatbotToggleButton) {
-      chatbotWindow.classList.toggle('hidden');
-      chatbotWindow.classList.toggle('flex');
+    if (chatbotWindow && closeChatbotBtn && chatbotToggleButton) {
+        chatbotWindow.classList.toggle('hidden');
+        chatbotWindow.classList.toggle('flex');
 
-      if (chatbotWindow.classList.contains('hidden')) {
-          // Chatbot fermé
-          closeChatbotBtn.classList.add('hidden');
-          chatbotToggleButton.classList.remove('hidden'); // On remet le bouton rond
-      } else {
-          // Chatbot ouvert
-          closeChatbotBtn.classList.remove('hidden');
-          chatbotToggleButton.classList.add('hidden'); // On cache le bouton rond
-      }
-  } else {
-      console.error("Élément chatbot introuvable");
-  }
+        if (chatbotWindow.classList.contains('hidden')) {
+            closeChatbotBtn.classList.add('hidden');
+            chatbotToggleButton.classList.remove('hidden');
+        } else {
+            closeChatbotBtn.classList.remove('hidden');
+            chatbotToggleButton.classList.add('hidden');
+            showOptions();
+        }
+    }
+}
+
+function showOptions() {
+    const optionsDiv = document.getElementById('chatbot-options');
+    const menuContainer = document.getElementById('chatbot-menu-container');
+    
+    optionsDiv.classList.remove('hidden');
+    menuContainer.classList.add('hidden');
+    
+    // Bouton pour afficher les catégories
+    document.getElementById('show-categories-btn').onclick = function() {
+        menuContainer.classList.toggle('hidden');
+        if (!menuContainer.classList.contains('hidden')) {
+            displayCategories();
+        }
+    };
 }
 
 function sendMessage() {
@@ -71,28 +84,28 @@ function handleKeyPress(event) {
 }
 
  // Stockage des données du chatbot
- let chatbotData = {
+let chatbotData = {
     categories: [],
     faqs: [],
-    currentState: 'categories' // categories -> questions -> answer
+    currentCategory: null
 };
-
 
 // Fonction pour afficher les catégories
 function displayCategories() {
     const menu = document.getElementById('chatbot-menu');
-    menu.innerHTML = '<p class="font-bold mb-2">Choisissez une catégorie :</p>';
+    menu.innerHTML = '<p class="font-bold mb-2 text-gray-700">Catégories :</p>';
     
     const ul = document.createElement('ul');
-    ul.className = 'mt-2 space-y-2';
+    ul.className = 'space-y-1';
     
     chatbotData.categories.forEach(category => {
         const li = document.createElement('li');
-        li.className = 'cursor-pointer hover:underline';
+        li.className = 'cursor-pointer px-2 py-1 hover:bg-gray-200 rounded text-gray-800';
         li.textContent = category.name;
         li.onclick = () => {
+            chatbotData.currentCategory = category;
             loadQuestions(category.id);
-            addMessageToChat(category.name, 'user');
+            addMessageToChat(`Catégorie: ${category.name}`, 'user');
         };
         ul.appendChild(li);
     });
@@ -102,34 +115,38 @@ function displayCategories() {
 
 // Fonction pour charger les questions d'une catégorie
 function loadQuestions(categoryId) {
+    const menu = document.getElementById('chatbot-menu');
+    menu.innerHTML = '<p class="font-bold mb-2 text-gray-700">Questions :</p>';
+    
+    const backButton = document.createElement('button');
+    backButton.className = 'text-sm text-blue-600 mb-2';
+    backButton.textContent = '← Retour aux catégories';
+    backButton.onclick = displayCategories;
+    menu.appendChild(backButton);
+    
     fetch(`/api/chatbot/faqs?category=${categoryId}`)
         .then(response => response.json())
         .then(data => {
             chatbotData.faqs = data;
-            displayQuestions();
+            
+            const ul = document.createElement('ul');
+            ul.className = 'space-y-1';
+            
+            data.forEach(faq => {
+                const li = document.createElement('li');
+                li.className = 'cursor-pointer px-2 py-1 hover:bg-gray-200 rounded text-gray-800';
+                li.textContent = faq.question;
+                li.onclick = () => {
+                    addMessageToChat(faq.question, 'user');
+                    setTimeout(() => {
+                        addMessageToChat(faq.answer, 'bot');
+                    }, 500);
+                };
+                ul.appendChild(li);
+            });
+            
+            menu.appendChild(ul);
         });
-}
-
-// Fonction pour afficher les questions
-function displayQuestions() {
-    const menu = document.getElementById('chatbot-menu');
-    menu.innerHTML = '<p class="font-bold mb-2">Choisissez une question :</p>';
-    
-    const ul = document.createElement('ul');
-    ul.className = 'mt-2 space-y-2';
-    
-    chatbotData.faqs.forEach(faq => {
-        const li = document.createElement('li');
-        li.className = 'cursor-pointer hover:underline';
-        li.textContent = faq.question;
-        li.onclick = () => {
-            displayAnswer(faq.id);
-            addMessageToChat(faq.question, 'user');
-        };
-        ul.appendChild(li);
-    });
-    
-    menu.appendChild(ul);
 }
 
 // Fonction pour afficher la réponse
@@ -147,13 +164,20 @@ function addMessageToChat(message, sender) {
     messageDiv.className = `flex justify-${sender === 'user' ? 'end' : 'start'} mb-4`;
     
     const contentDiv = document.createElement('div');
-    contentDiv.className = `bg-[var(--${sender === 'user' ? 'noir' : 'beige'})] text-[var(--blanc)] p-3 rounded-lg max-w-[70%] ${sender === 'bot' ? 'tapping-animation' : ''}`;
-    contentDiv.textContent = message;
+    contentDiv.className = `
+        bg-[var(--${sender === 'user' ? 'noir' : 'beige'})] 
+        text-[var(--blanc)] 
+        p-3 
+        rounded-lg 
+        max-w-[70%]
+        break-words
+        overflow-hidden
+    `;
     
+    contentDiv.innerHTML = message;
     messageDiv.appendChild(contentDiv);
     messagesDiv.appendChild(messageDiv);
     
-    // Faire défiler vers le bas
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
@@ -179,7 +203,6 @@ document.addEventListener('DOMContentLoaded', function() {
   .then(response => response.json())
   .then(data => {
       chatbotData.categories = data;
-      displayCategories();
   });
 
 

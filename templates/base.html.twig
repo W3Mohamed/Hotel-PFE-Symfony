@@ -242,23 +242,31 @@
                                 Bonjour ! Comment puis-je vous aider ?
                             </div>
                         </div>
-
-                        <!-- Menu des catégories (chargé dynamiquement) -->
-                        <div class="flex justify-start mb-4">
-                            <div class="bg-[var(--beige)] text-[var(--blanc)] p-3 rounded-lg max-w-[70%]" id="chatbot-menu">
-                                <!-- Le contenu sera chargé par JavaScript -->
-                            </div>
-                        </div>
                     </div>
 
-                    <!-- Zone de saisie (cachée initialement) -->
-                    <div class="flex border-t border-gray-200 hidden" id="chatbot-input-container">
-                        <input type="text" id="chatbot-input" placeholder="Tapez votre message..." class="flex-1 p-3 outline-none"
-                            onkeypress="handleKeyPress(event)"/>
-                        <button class="bg-[var(--beige)] text-[var(--blanc)] p-3 hover:bg-[var(--noir)] transition-colors duration-300"
-                                onclick="sendMessage()">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
+                    <!-- Zone de saisie améliorée -->
+                    <div class="border-t border-gray-200 p-2 bg-white" id="chatbot-input-area">
+                        <!-- Menu des options -->
+                        <div class="hidden mb-2" id="chatbot-options">
+                            <button id="show-categories-btn" class="bg-[var(--beige)] text-[var(--blanc)] px-3 py-1 rounded text-sm">
+                                Choisir une catégorie
+                            </button>
+                        </div>
+                        
+                        <!-- Menu des catégories/questions (caché initialement) -->
+                        <div class="hidden mb-2 bg-gray-100 p-2 rounded" id="chatbot-menu-container">
+                            <div id="chatbot-menu"></div>
+                        </div>
+                        
+                        <!-- Zone de saisie de texte -->
+                        <div class="flex" id="chatbot-input-container">
+                            <input type="text" id="chatbot-input" placeholder="Tapez votre message..." 
+                                class="flex-1 p-2 outline-none border rounded-l">
+                            <button class="bg-[var(--beige)] text-[var(--blanc)] p-2 rounded-r"
+                                    onclick="sendMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
