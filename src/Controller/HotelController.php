@@ -155,7 +155,8 @@ final class HotelController extends AbstractController
                 'attr' => [
                     'rows' => 5,
                     'class' => 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--beige)] focus:border-[var(--beige)]'
-                ]
+                ],
+                'data' => $request->query->get('message') 
             ])
             ->getForm();
     
