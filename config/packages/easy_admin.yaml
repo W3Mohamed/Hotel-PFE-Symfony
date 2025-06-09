@@ -1,0 +1,12 @@
+easy_admin:
+    # ...
+    
+    # Configuration de la sécurité
+    security:
+        enable: true
+        # Le rôle requis pour accéder au backoffice
+        role: ROLE_ADMIN
+        # La route de login
+        login_path: app_login
+        # La route de logout
+        logout_path: app_logout
