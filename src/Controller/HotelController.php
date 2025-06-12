@@ -342,7 +342,7 @@ final class HotelController extends AbstractController
 
             // 4. Créer une nouvelle réservation
             $reservation = new Reservations();
-            $reservation->setStatus('Confirmée'); // ou autre statut initial
+            $reservation->setStatus('Confirmée'); 
             $reservation->setPrixTotal((float) $request->request->get('total')); 
             $reservation->setDateCreation(new \DateTimeImmutable());
             $reservation->setCommentaire($request->request->get('commentaires'));
@@ -359,7 +359,7 @@ final class HotelController extends AbstractController
             $em->flush();
 
             try {
-                // Créer manuellement le transport SMTP comme dans votre test
+                // Créer manuellement le transport SMTP
                 $dsn = 'smtp://mohamedbenachenhou430@gmail.com:fcunsvkgyjpcsqhz@smtp.gmail.com:587';
                 $transport = Transport::fromDsn($dsn);
                 
