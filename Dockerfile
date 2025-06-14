@@ -1,30 +1,29 @@
 FROM php:8.2-apache
 
-# Installer les dépendances système nécessaires
+# Installer les extensions nécessaires
 RUN apt-get update && apt-get install -y \
-    libicu-dev libzip-dev zip unzip git curl \
-    libonig-dev libxml2-dev libpng-dev \
-    && docker-php-ext-install intl pdo pdo_mysql zip opcache
-
-# Installer Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+    unzip git curl libicu-dev libzip-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install intl pdo pdo_mysql zip
 
 # Activer mod_rewrite
 RUN a2enmod rewrite
 
-# Copier tous les fichiers du projet dans le conteneur
+# Télécharger et installer Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Copier tout le code source dans le container
 COPY . /var/www/html/
 
 # Définir le dossier de travail
 WORKDIR /var/www/html
 
-# Installer les dépendances PHP (prod uniquement)
+# Installer les dépendances PHP Symfony (prod uniquement)
 RUN composer install --no-dev --optimize-autoloader
 
-# Corriger la racine Apache
+# Changer le document root d'Apache vers /public
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# Permettre les .htaccess dans /public
+# Autoriser l'utilisation de .htaccess dans /public
 RUN echo '<Directory /var/www/html/public>\n\
     AllowOverride All\n\
     Require all granted\n\
