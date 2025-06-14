@@ -1,22 +1,27 @@
 FROM php:8.2-apache
 
-# Installer les extensions nécessaires à Symfony
+# Installer dépendances nécessaires
 RUN apt-get update && apt-get install -y \
-    git unzip libicu-dev libpq-dev libzip-dev libonig-dev libxml2-dev \
+    libicu-dev libzip-dev zip unzip git curl libonig-dev libxml2-dev \
     && docker-php-ext-install intl pdo pdo_mysql zip opcache
 
-# Active mod_rewrite pour Symfony
+# Activer mod_rewrite (important pour .htaccess de Symfony)
 RUN a2enmod rewrite
 
-# Copier les fichiers Symfony
+# Copier tous les fichiers dans le container
 COPY . /var/www/html/
 
-# Positionne le bon répertoire de travail
+# Définir le dossier de travail
 WORKDIR /var/www/html
+
+# Donner les bons droits à Apache
 RUN chown -R www-data:www-data /var/www/html
 
-# Ajouter config Apache pour rediriger vers /public
+# Indiquer à Apache d’utiliser le dossier public comme racine
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
+# Ajout config .htaccess pour Symfony
 RUN echo '<Directory /var/www/html/public>\n\
     AllowOverride All\n\
-</Directory>' > /etc/apache2/conf-available/symfony.conf \
-    && a2enconf symfony
+    Require all granted\n\
+</Directory>' >> /etc/apache2/apache2.conf
